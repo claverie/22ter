@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta name="author" content="Txiki31 &lt;txiki31@gmial.com&gt;"/>
+    <title>Test Domoticz</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link id="domo.css" href="dist/css/domo.css?v=" rel="stylesheet" type="text/css">
+</head>
+
+<body class="eec__portal">
+
+<h4>Infos</h4>
+<div>Date : <span data-domo-key="today"></span></div>
+<div>Levé du soleil : <span data-domo-key="sunrise"></span></div>
+<div>Couché du soleil : <span data-domo-key="sunset"></span></div>
+
+<h4>Switches</h4>
+<div id="switches"></div>
+
+<h4>Groupes</h4>
+<div id="groups"></div>
+
+<h4>Météo</h4>
+<div>Mise à jour <span data-domo-key="forecast.uptime">X</span> </div>
+<h5>Actuellement...</h5>
+<div id="forecast-current"></div>
+<h5>Journée</h5>
+<div id="forecast-day"></div>
+<h5>Semaine</h5>
+<div id="forecast-week"></div>
+
+
+<script id="switches-template" type="x-tmpl-mustache">
+    {{#devices}}
+    <div id="domo-device-{{idx}}" class="switch">[{{idx}}] {{Name}}
+    <a class="on" href="#" data-domo-action="On"  data-domo-idx="{{idx}}" data-domo-type="{{Type}}">
+    {{#isBlind}}[DOWN]{{/isBlind}} {{^isBlind}}[ON]{{/isBlind}}
+    </a>
+    {{#isBlind}}
+    <a class="my" href="#" data-domo-action="Stop"  data-domo-idx="{{idx}}" data-domo-type="{{Type}}">MY</a>
+    {{/isBlind}}
+    <a class="off" href="#" data-domo-action="Off" data-domo-idx="{{idx}}" data-domo-type="{{Type}}">
+    {{#isBlind}}[UP]{{/isBlind}} {{^isBlind}}[OFF]{{/isBlind}}
+    </a>
+    <span class="status"></span>
+    </div>
+    {{/devices}}
+</script>
+
+
+<script id="groups-template" type="x-tmpl-mustache">
+    {{#types}}
+        <ul>
+            <li>{{type}}
+                <ul>
+                    {{#groups}}
+                    <li>{{label}}
+                        <a class="on" href="#" data-domo-action="On"  data-domo-idx="{{#list}}{{idx}} {{/list}}" data-domo-type="{{Type}}">
+                            {{#isBlind}}[DOWN]{{/isBlind}} {{^isBlind}}[ON]{{/isBlind}}
+                        </a>
+    {{#isBlind}}
+    <a class="my" href="#" data-domo-action="Stop"  data-domo-idx="{{#list}}{{idx}} {{/list}}" data-domo-type="{{Type}}">MY</a>
+    {{/isBlind}}
+                        <a class="on" href="#" data-domo-action="Off"  data-domo-idx="{{#list}}{{idx}} {{/list}}" data-domo-type="{{Type}}">
+                            {{#isBlind}}[UP]{{/isBlind}} {{^isBlind}}[OFF]{{/isBlind}}
+                        </a>
+                        <ul>
+                            {{#list}}
+                                <li>{{Name}}</li>
+                            {{/list}}
+                        </ul>
+                    </li>
+                    {{/groups}}
+                </ul>
+            </li>
+        </ul>
+    {{/types}}
+</script>
+
+<script id="forecast-template" type="x-tmpl-mustache">
+    {{#data}}
+    <div>
+    <canvas id="{{time}}" data-domo-icon={{icon}} width="64" height="64"></canvas> résumé:{{summary}}  t°:{{temperature}} time:{{dateTime.day}} {{dateTime.hour}}
+    </div>
+    {{/data}}
+</script>
+
+<script type="text/javascript" src="dist/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="dist/js/mustache.min.js"></script>
+<script type="text/javascript" src="dist/js/skycons.js"></script>
+<script type="text/javascript" src="dist/js/domo.js"></script>
+</body>
+</html>

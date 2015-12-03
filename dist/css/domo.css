@@ -1,0 +1,99 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,700,700italic,400italic");
+/* @import "domo-dark.less"; */
+/* @import "domo-light.less"; */
+body,
+h1 {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+body {
+  background-color: #ffffff;
+  color: #173a61;
+}
+.navbar {
+  background-color: #ffffff;
+  border-color: #475a6f;
+  color: #173a61;
+}
+.navbar .navbar-brand img {
+  height: 40px;
+  border-radius: 50%;
+  margin-top: -10px;
+}
+.navbar .navbar-text {
+  color: #173a61;
+}
+.navbar.footer {
+  min-height: 50px;
+}
+.mybtn {
+  display: inline-block;
+  text-align: center;
+  padding: 1em;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #173a61;
+  border-radius: 50%;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7), 3px 3px 0 rgba(0, 0, 0, 0.12);
+  width: 60px;
+  height: 60px;
+}
+.mybtn i {
+  line-height: 1.5em;
+}
+.left-bar {
+  position: fixed;
+  left: 0;
+  top: 50px;
+  bottom: 50px;
+  width: 90px;
+  overflow-y: auto;
+  padding: 15px;
+}
+.left-bar ul li.disabled a {
+  background-color: #ffffff;
+  box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.main-page {
+  position: fixed;
+  left: 90px;
+  right: 0;
+  top: 50px;
+  bottom: 50px;
+  overflow-y: auto;
+}
+.main-page h1.title {
+  margin: 25% 5% 0 5%;
+  text-align: center;
+}
+.blind-box {
+  float: left;
+  margin-top: 10px;
+  margin-right: 10px;
+  border: 1px solid #475a6f;
+  border-radius: 5px;
+}
+.blind-box .blind-label {
+  padding: 5px;
+  font-size: 150%;
+  border-bottom: 1px solid #475a6f;
+}
+.blind-box .blind-commands {
+  padding: 5px;
+  text-align: right;
+}
+.blind-box .blind-commands .mybtn {
+  margin-left: 0;
+}
+.fhour .fhour-hour {
+  position: absolute;
+  font-size: 90%;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.7);
+  z-index: 1000;
+  top: 0;
+  text-align: right;
+}
+.fhour .fhour-summary {
+  position: absolute;
+  top: 50%;
+}

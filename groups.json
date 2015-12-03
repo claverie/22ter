@@ -1,0 +1,141 @@
+{
+  "groups": [
+    {
+      "label": "tous",
+      "list": [
+        {
+          "idx": 22
+        },
+        {
+          "idx": 88
+        }
+      ]
+    },
+    {
+      "label": "tous les volets",
+      "list": [
+        {
+          "idx": 7
+        },
+        {
+          "idx": 8
+        },
+        {
+          "idx": 9
+        },
+        {
+          "idx": 10
+        },
+        {
+          "idx": 11
+        },
+        {
+          "idx": 12
+        },
+        {
+          "idx": 13
+        },
+        {
+          "idx": 14
+        },
+        {
+          "idx": 15
+        },
+        {
+          "idx": 16
+        },
+        {
+          "idx": 17
+        }
+      ]
+    },
+    {
+      "label": "rez-de-chaussée",
+      "list": [
+        {
+          "idx": 7
+        },
+        {
+          "idx": 8
+        },
+        {
+          "idx": 10
+        },
+        {
+          "idx": 11
+        }
+      ]
+    },
+    {
+      "label": "étage",
+      "list": [
+        {
+          "idx": 12
+        },
+        {
+          "idx": 13
+        },
+        {
+          "idx": 14
+        },
+        {
+          "idx": 15
+        },
+        {
+          "idx": 16
+        },
+        {
+          "idx": 17
+        }
+      ]
+    },
+    {
+      "label": "annexe",
+      "list": [
+        {
+          "idx": 9
+        }
+      ]
+    },
+    {
+      "label": "façade sud",
+      "list": [
+        {
+          "idx": 8
+        },
+        {
+          "idx": 10
+        },
+        {
+          "idx": 13
+        },
+        {
+          "idx": 14
+        }
+      ]
+    },
+    {
+      "label": "façade est",
+      "list": [
+        {
+          "idx": 7
+        },
+        {
+          "idx": 11
+        },
+        {
+          "idx": 12
+        },
+        {
+          "idx": 15
+        },
+        {
+          "idx": 16
+        },
+        {
+          "idx": 17
+        }
+      ]
+    }
+  ]
+}

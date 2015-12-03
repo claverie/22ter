@@ -1,0 +1,122 @@
+@navbar-height: 50px;
+@footer-height: 50px;
+@fg-color: #fff;
+@menu-btn-size: 60px;
+@leftbar-width: (@menu-btn-size + 30);
+
+/* @import "domo-dark.less"; */
+/* @import "domo-light.less"; */
+@import "domo-light.less";
+
+@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,700,700italic,400italic");
+
+body, h1 {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+body {
+  background-color: @bg-color;
+  color: @fg-color;
+}
+.navbar {
+  background-color: @bg-color;
+  border-color: @border-color;
+  color: @fg-color;
+  .navbar-brand {
+    img {
+      height: 40px;
+      border-radius: 50%;
+      margin-top: -10px;
+    }
+  }
+  .navbar-text {
+    color: @fg-color;
+  }
+  &.footer {
+    min-height: @footer-height;
+  }
+}
+
+.mybtn {
+  display: inline-block;
+  text-align: center;
+  padding: 1em;
+  background-color: @btn-bg-color;
+  color: @btn-fg-color;
+  border-radius: 50%;
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.7), 3px 3px 0 rgba(0,0,0,0.12);
+  width: @menu-btn-size;
+  height:@menu-btn-size;
+  i {
+    line-height: 1.5em;
+  }
+}
+
+.left-bar {
+  position: fixed;
+  left:0;
+  top:@navbar-height;
+  bottom:@footer-height;
+  width: @leftbar-width;
+  overflow-y: auto;
+  padding: ((@leftbar-width - @menu-btn-size ) / 2);
+  ul {
+    li {
+      &.disabled {
+        a {
+          background-color: @bg-color;
+          box-shadow: none;
+          border: 1px solid rgba(0,0,0,0.2);
+        }
+      }
+    }
+  }
+}
+.main-page {
+  position: fixed;
+  left:@leftbar-width;
+  right: 0;
+  top:@navbar-height;
+  bottom:@footer-height;
+  overflow-y: auto;
+  h1 {
+    &.title {
+      margin: 25% 5% 0 5%;
+      text-align: center;
+    }
+  }
+}
+
+.blind-box {
+  float:left;
+  margin-top: 10px;
+  margin-right: 10px;
+  border:1px solid @border-color;
+  border-radius: 5px;
+  .blind-label {
+    padding: 5px;
+    font-size: 150%;
+    border-bottom:1px solid @border-color;
+  }
+  .blind-commands {
+    padding: 5px;
+    text-align: right;
+    .mybtn {
+      margin-left: 0;
+    }
+  }
+}
+.fhour {
+  .fhour-hour {
+    position: absolute;
+    font-size: 90%;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.7);
+    z-index: 1000;
+    top: 0;
+    text-align: right;
+  }
+  .fhour-summary {
+    position: absolute;
+    top:50%;
+  }
+}

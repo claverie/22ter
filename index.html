@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta name="author" content="Txiki31 &lt;txiki31@gmail.com&gt;"/>
+    <title>Test Domoticz</title>
+    <link rel="shortcut icon" href="favico.jpg" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="dist/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!--
+    <link data-domo-css="dark" href="dist/css/domo-dark.css?v=" rel="stylesheet" type="text/css">
+    <link data-domo-css="light" href="dist/css/domo-light.css?v=" rel="stylesheet" type="text/css">
+      -->
+    <link data-domo-css="main" href="dist/css/domo.css?v=" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="navbar navbar-default navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img src="dist/images/logo.jpg">
+            </a>
+        </div>
+        <div class="nav navbar-text">
+            23,8°c, Mercredi 12 janvier 2016 <a class="reload-css">CSS reload</a>
+        </div>
+        <div class="nav navbar-text navbar-right">
+            Levé du soleil 08h45, couché 17h32
+        </div>
+    </div>
+</div>
+
+<div class="left-bar">
+    <ul class="nav nav-pills nav-stacked">
+        <li class="active">
+            <a href="#blinds-tab" class="mybtn" aria-controls="blinds-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-2x fa-windows"></i>
+            </a>
+        </li>
+        <li>
+            <a href="#switches-tab" class="mybtn"  aria-controls="switches-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-2x fa-toggle-on"></i>
+            </a>
+        </li>
+        <li>
+            <a href="#groups-tab" class="mybtn"  aria-controls="groups-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-2x fa-clone"></i>
+            </a>
+        </li>
+        <li>
+            <a href="#forecast-tab" class="mybtn"  aria-controls="forecast-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-2x fa-cloud"></i>
+            </a>
+        </li>
+        <li>
+            <a href="#sensors-tab" class="mybtn"  aria-controls="sensors-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-2x fa-rotate-270 fa-battery-half "></i>
+            </a>
+        </li>
+        <li class="disabled">
+            <a href="#programs-tab" class="mybtn"  aria-controls="programs-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-2x fa-clock-o "></i>
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="main-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="blinds-tab">
+                    <div class="col-xs-12 clearfix" id="blinds"></div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="switches-tab">
+                    <div class="col-xs-12 clearfix" id="switches"></div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="groups-tab">
+                    <div class="col-xs-12 clearfix" id="groups"></div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="forecast-tab">
+                    <h1 class=""title">Forecast</h1>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="sensors-tab">
+                    <h1 class=""title">Sensors</h1>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="programs-tab">
+                    <h1 class=""title">Programs</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Static bottom navbar -->
+<div class="navbar navbar-default navbar-fixed-bottom footer">
+    <div class="container-fluid">
+        <div class="row" id="forecast-hourly"></div>
+        </div>
+    </div>
+</div>
+
+<script id="blinds-template" type="x-tmpl-mustache">
+{{#blinds}}
+    <div id="domo-device-{{idx}}" class="blind-box">
+        <div class="blind-label">{{Name}}</div>
+        <div class="blind-commands">
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
+                <i class="fa fa-2x fa-fw fa-arrow-up"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
+                <i class="fa fa-2x fa-fw fa-minus"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
+                <i class="fa fa-2x fa-fw fa-arrow-down"></i>
+            </a>
+        </div>
+    </div>
+{{/blinds}}
+</script>
+
+<script id="switches-template" type="x-tmpl-mustache">
+{{#switches}}
+<div id="domo-device-{{idx}} class="blind-box">
+        <div class="blind-label">{{Name}}</div>
+        <div class="blind-commands">
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{idx}}" data-domo-type="{{Type}}">
+                <i class="fa fa-2x fa-fw fa-toggle-on"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{idx}}" data-domo-type="{{Type}}">
+                <i class="fa fa-2x fa-fw fa-toggle-off"></i>
+            </a>
+        </div>
+    </div>
+{{/switches}}
+</script>
+
+<script id="groups-template" type="x-tmpl-mustache">
+<h1>LES GROUPES</h1>
+{{#groups}}
+    {{#haveBlind}}
+    <div id="domo-group-id" class="blind-box">
+        <div class="blind-label">{{label}}</div>
+        <div class="blind-commands">
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#list}}{{idx}}{{^last}},{{/last}}{{/list}}" data-domo-type="{{Type}}">
+                <i class="fa fa-2x fa-fw fa-arrow-up"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{#list}}{{idx}}{{^last}},{{/last}}{{/list}}" data-domo-type="{{Type}}">
+                <i class="fa fa-2x fa-fw fa-minus"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#list}}{{idx}}{{^last}},{{/last}}{{/list}}" data-domo-type="{{Type}}">
+                <i class="fa fa-2x fa-fw fa-arrow-down"></i>
+            </a>
+        </div>
+    </div>
+    {{/haveBlind}}
+    {{^haveBlind}}
+    <div id="domo-group-{{idx}} class="blind-box">
+        <div class="blind-label">{{label}}</div>
+            <div class="blind-commands">
+                <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#list}}{{idx}}{{^last}},{{/last}}{{/list}}" data-domo-type="{{Type}}">
+                    <i class="fa fa-2x fa-fw fa-toggle-on"></i>
+                </a>
+                <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#list}}{{idx}}{{^last}},{{/last}}{{/list}}" data-domo-type="{{Type}}">
+                   <i class="fa fa-2x fa-fw fa-toggle-off"></i>
+                </a>
+            </div>
+        </div>
+     </div>
+    {{/haveBlind}}
+{{/groups}}
+</script>
+
+
+<script id="forecast-hourly-template" type="x-tmpl-mustache">
+{{#data}}
+    <div class="col-xs-1 fhour">
+        <canvas id="{{time}}" data-domo-icon={{icon}} width="60px" height="60px"></canvas>
+        <div class="fhour-hour">{{dateTime.hour}}</div>
+        <div class="fhour-summary">{{summary}}</div>
+    </div>
+{{/data}}
+</script>
+
+
+
+<script type="text/javascript" src="dist/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="dist/js/mustache.min.js"></script>
+<script type="text/javascript" src="dist/js/skycons.js"></script>
+<script type="text/javascript" src="dist/js/domo.js"></script>
+
+</body>
+</html>

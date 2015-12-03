@@ -1,0 +1,11 @@
+{
+  "parameters": {
+    "url": "https://api.forecast.io/forecast",
+    "key": "********************************",
+    "loc": "43.6010772,1.3185442",
+    "options": {
+      "units": "si",
+      "lang":  "fr"
+    }
+  }
+}
