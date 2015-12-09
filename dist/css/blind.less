@@ -1,0 +1,31 @@
+@blind-height: 30px;
+@blind-width: 30px;
+@blind-line-height: 2px;
+@blind-line-width: (@blind-width - 4px);
+
+
+body {
+  padding: 5em;
+}
+
+.blind {
+  display: inline-block;
+  height: @blind-height;
+  width: @blind-width;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #cccccc;
+  border-radius: 3px 3px 0 0;
+  overflow: hidden;
+  .blind-concrete {
+    position: relative;
+    bottom: 0;
+    .blind-line {
+      margin-top: 1px;
+      height: @blind-line-height;
+      border-width: 1px 0 2px 0;
+      border-style: dotted none solid none;
+      border-color: #cccccc;
+    }
+  }
+}

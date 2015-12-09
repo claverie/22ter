@@ -1,20 +1,28 @@
 $(document).ready(function DomoticzW() {
 
-    var cssLoader  {
+    var cssLoader = {
         reload: function() {
             $("[data-domo-css]").each( function() {
                 var nref = $(this).attr("href").replace(/\?v=[0-9]*/,"?v="+Date.now());
                 $(this).attr("href" , nref);
-                console.log($(this), nref);
             });
         },
         toggle: function() {
             var $css = $("[data-domo-css-color]");
-
+            var css = $css.attr("href");
+            $log.debug("Switch CSS ["+css+"]")
+            if ($css.attr("data-domo-css-color") === "light") {
+                $css.attr("data-domo-css-color", "dark").attr("href", "/dist/css/domo-dark.css");
+            } else {
+                $css.attr("data-domo-css-color", "light").attr("href", "/dist/css/domo-light.css");
+            }
         }
     };
     $(".reload-css").on("click", function() {
         cssLoader.reload();
+    });
+    $(".toggle-css").on("click", function() {
+        cssLoader.toggle();
     });
 
     var myDate = function(timestamp) {
@@ -47,7 +55,7 @@ $(document).ready(function DomoticzW() {
         init: function (handler) {
             this.updateHandler = handler;
             var self = this;
-            var command = 'forecast.json';
+            var command = 'configuration/forecast.json';
             Server.request(
                 command,
                 "GET",
@@ -120,7 +128,7 @@ $(document).ready(function DomoticzW() {
         groups : null,
         load: function (handler) {
             var self = this;
-            var command = 'groups.json';
+            var command = 'configuration/groups.json';
             Server.request(
                 command,
                 "GET",
@@ -134,7 +142,7 @@ $(document).ready(function DomoticzW() {
                             self.groups[it].id = "G"+it;
                             self.groups[it].list[id].last = true;
                             if (id>0) self.groups[it].list[(id-1)].last = false;
-                                self.groups[it].haveBlind = function(idx) {
+                            self.groups[it].haveBlind = function(idx) {
                                 for (var ib=0; ib<Switches.devices.blinds.length; ib++) {
                                     if (parseInt(Switches.devices.blinds[ib].idx) === idx) {
                                         return true;
@@ -184,7 +192,7 @@ $(document).ready(function DomoticzW() {
                     }
                     else
                     {
-                        console.log("QueryError[" + textStatus + "]", jqXHR);
+                        $log.danger("Erreur d'accès au serveur [" + textStatus + "].");
                     }
                 });
         }
@@ -230,7 +238,6 @@ $(document).ready(function DomoticzW() {
                     }
                 }
             }
-            //console.log("Prop>", this.properties)
             return this;
         },
         run: function( o ) {
@@ -359,7 +366,7 @@ $(document).ready(function DomoticzW() {
                 var idx = idxList[isw];
                 var o = order;
                 command = "type=command&param=switchlight&idx="+idx+"&switchcmd="+o;
-                console.log("COMMAND("+idx+")",o);
+                $log.info(idx+": envoi de la command ["+o+"]");
                 DomoServer.init().request(
                     command,
                     "GET",
@@ -412,7 +419,6 @@ $(document).ready(function DomoticzW() {
 
         },
         devices: function() {
-            console.log("Devices>", Switches.devices);
             this.displayDayDatas();
             this.displayBlinds();
             this.displaySwitches();
@@ -429,6 +435,43 @@ $(document).ready(function DomoticzW() {
             $("#blinds").empty().html(Mustache.render(
                 $("#blinds-template").html(), Switches.devices
             ));
+            $(".blind").each( function() {
+                $(this).attr("data-blind-state", function () {
+                    switch ($(this).data("blind-rfy-state")) {
+                        case "Open":
+                            return "open";
+                            break;
+                        case "Closed":
+                            return "closed";
+                            break;
+                    }
+                    ;
+                    return "my";
+                });
+            });
+            var $blinds = Blinds();
+            $('[data-domo-type="RFY"]').on("click", function() {
+                var id = "anim-"+$(this).data("domo-idx");
+                var action = $(this).data("domo-action");
+                if (typeof $blinds[id] !== "undefined" ) {
+                    switch (action) {
+                        case "Off":
+                            $blinds[id].up();
+                            break;
+                        case "On":
+                            $blinds[id].down();
+                            break;
+                        case "Stop":
+                            $blinds[id].my();
+                            break;
+                        default:
+                            $log.warning("Blind[" + id + "] invalid command : "+action+".");
+                    }
+                } else {
+                    $log.warning("Blind command("+action+") ["+id+"] not found.");
+                }
+
+            });
         },
         displaySwitches: function() {
             $("#switches").empty().html(Mustache.render(
@@ -436,18 +479,6 @@ $(document).ready(function DomoticzW() {
             ));
         }
     };
-
-    Switches.load( function() {
-        UI.devices();
-        AppGroups.load( function() {
-            console.log(AppGroups);
-            $("#groups").empty().html(Mustache.render(
-                $("#groups-template").html(), AppGroups
-            ));
-
-        });
-
-    });
 
     Forecast.init( function() {
         Forecast.datas.hourly.data = Forecast.datas.hourly.data.slice(0, 12);
@@ -470,5 +501,63 @@ $(document).ready(function DomoticzW() {
     $('body').on("click", '[data-domo-action]', function() {
         Switches.run($(this).data('domo-idx'), $(this).data('domo-action'));
     });
+
+    var ws = window.screen;
+    if (ws.availHeight < 600 || ws.availWidth < 960) {
+        alert("Screen too small "+ws.availHeight+"x"+ws.availWidth)
+    }
+
+    $log.info("L'application est chargée.");
+
+    var initScreen = function() {
+        $(".loading-datas").fadeIn();
+        $('[data-domo-var="date"]').html(myDate(Date.now()).day);
+        Switches.load( function() {
+            UI.devices();
+            AppGroups.load( function() {
+                $("#groups").empty().html(Mustache.render(
+                    $("#groups-template").html(), AppGroups
+                ));
+                $(".loading-datas").fadeOut();
+                /*
+                 setTimeout(function () {
+                 initScreen();
+                 }, 50000 );
+                 */
+            });
+        });
+    };
+    initScreen();
+
+    $(".reload-page").on("click", function () {
+        initScreen();
+    });
+    $(".full-screen").on("click", function () {
+        toggleFullScreen();
+    });
+    var toggleFullScreen = function() {
+        if (!document.fullscreenElement &&    // alternative standard method
+            !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) {
+                document.documentElement.msRequestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) {
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+    };
 
 });

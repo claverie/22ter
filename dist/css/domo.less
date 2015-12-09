@@ -1,12 +1,8 @@
-@navbar-height: 50px;
-@footer-height: 50px;
+@navbar-height: 70px;
+@footer-height: 70px;
 @fg-color: #fff;
-@menu-btn-size: 60px;
+@menu-btn-size: 80px;
 @leftbar-width: (@menu-btn-size + 30);
-
-/* @import "domo-dark.less"; */
-/* @import "domo-light.less"; */
-@import "domo-light.less";
 
 @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,700,700italic,400italic");
 
@@ -21,6 +17,10 @@ body {
   background-color: @bg-color;
   border-color: @border-color;
   color: @fg-color;
+  &.navbar-fixed-top,
+  &.navbar-fixed-bottom {
+    margin-left: @leftbar-width;
+  }
   .navbar-brand {
     img {
       height: 40px;
@@ -29,6 +29,7 @@ body {
     }
   }
   .navbar-text {
+    font-size: 150%;
     color: @fg-color;
   }
   &.footer {
@@ -39,26 +40,32 @@ body {
 .mybtn {
   display: inline-block;
   text-align: center;
-  padding: 1em;
   background-color: @btn-bg-color;
   color: @btn-fg-color;
-  border-radius: 50%;
   box-shadow: 1px 1px 0 rgba(0,0,0,0.7), 3px 3px 0 rgba(0,0,0,0.12);
   width: @menu-btn-size;
   height:@menu-btn-size;
   i {
-    line-height: 1.5em;
+    line-height: @menu-btn-size;
   }
 }
 
 .left-bar {
   position: fixed;
   left:0;
-  top:@navbar-height;
-  bottom:@footer-height;
+  top:0;
+  bottom:0;
   width: @leftbar-width;
   overflow-y: auto;
   padding: ((@leftbar-width - @menu-btn-size ) / 2);
+  border-right: 1px solid @border-color;
+  box-shadow: inset -1px 0 0 @border-shadow;
+  .logo {
+    width: @menu-btn-size;
+    height: @menu-btn-size;
+    margin-bottom: 15px;
+    border-radius: 50%;
+  }
   ul {
     li {
       &.disabled {
@@ -75,31 +82,31 @@ body {
   position: fixed;
   left:@leftbar-width;
   right: 0;
-  top:@navbar-height;
-  bottom:@footer-height;
+  top:0;
+  bottom:0;
   overflow-y: auto;
-  h1 {
-    &.title {
-      margin: 25% 5% 0 5%;
-      text-align: center;
+  .header {
+    font-size: 200%;
+    padding: 20px 5px 20px 5px;
+    border-bottom: 1px solid @border-color;
+    box-shadow: 0 1px 0 @border-shadow;
+    .somedatas {
+      padding-right: 20px;
+    }
+  }
+  .tab-pane {
+    h1 {
+      text-align: right;
     }
   }
 }
 
 .blind-box {
-  float:left;
-  margin-top: 10px;
-  margin-right: 10px;
-  border:1px solid @border-color;
-  border-radius: 5px;
   .blind-label {
-    padding: 5px;
-    font-size: 150%;
-    border-bottom:1px solid @border-color;
+    padding-top: 20px;
+    font-size:120%;
   }
   .blind-commands {
-    padding: 5px;
-    text-align: right;
     .mybtn {
       margin-left: 0;
     }
@@ -118,5 +125,46 @@ body {
   .fhour-summary {
     position: absolute;
     top:50%;
+  }
+}
+.log {
+  position: fixed;
+  bottom: 0;
+  left: @leftbar-width;
+  right:0;
+  .toggle {
+    margin-right: 10px;
+    padding: 5px 15px 5px 15px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: @fg-color;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+  }
+  .content {
+    overflow-y: scroll;
+    max-height:30%;
+    padding:20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #FFF;
+    .entry {
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      &:first-child {
+        border-top: none;
+      }
+      &.danger { color: red; }
+      &.warning { color: orange; }
+      &.debug { color: lightskyblue; }
+      .date {
+        padding-left: 10px;
+        float: left;
+        max-width: 30%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .message {
+        padding-left: 10px;
+        float: left;
+      }
+    }
   }
 }
