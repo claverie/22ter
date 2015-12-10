@@ -2,7 +2,7 @@
 @footer-height: 70px;
 @fg-color: #fff;
 @menu-btn-size: 80px;
-@leftbar-width: (@menu-btn-size + 30);
+@leftbar-width: 300px;
 
 @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,700,700italic,400italic");
 
@@ -38,7 +38,7 @@ body {
 }
 
 .mybtn {
-  display: inline-block;
+  display: block;
   text-align: center;
   background-color: @btn-bg-color;
   color: @btn-fg-color;
@@ -57,22 +57,40 @@ body {
   bottom:0;
   width: @leftbar-width;
   overflow-y: auto;
-  padding: ((@leftbar-width - @menu-btn-size ) / 2);
   border-right: 1px solid @border-color;
   box-shadow: inset -1px 0 0 @border-shadow;
+  .header {
+    font-size: 200%;
+    .somedatas {
+    }
+  }
   .logo {
     width: @menu-btn-size;
     height: @menu-btn-size;
     margin-bottom: 15px;
     border-radius: 50%;
+    margin: 20px;
   }
   ul {
     li {
-      &.disabled {
-        a {
-          background-color: @bg-color;
-          box-shadow: none;
-          border: 1px solid rgba(0,0,0,0.2);
+      a {
+        color: @fg-color;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        white-space: nowrap;
+        &:hover {
+          color: @bg-color;
+        }
+        &.button {
+          font-size: 2em;
+          padding: 10px;
+          border-top: 1px solid rgba(255,255,255,0.2);
+          box-shadow: 1px 1px 0 rgba(0,0,0,0.7), 3px 3px 0 rgba(0,0,0,0.12);
+          i {
+            padding-left:0.5em;
+            padding-right:0.5em;
+          }
         }
       }
     }

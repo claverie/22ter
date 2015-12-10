@@ -22,41 +22,48 @@
 <body>
 
 <div class="left-bar">
-    <img class="logo" src="dist/images/logo.jpg">
+    <div class="header">
+        <img class="logo" src="dist/images/logo.jpg">
+        <span class="somedatas temperature">
+            <i class="fa fa-line-chart"></i> 23,8°c
+        </span>
+    </div>
+
     <ul class="nav nav-pills nav-stacked">
         <li class="active">
-            <a href="#blinds-tab" class="mybtn" aria-controls="blinds-tab" role="tab" data-toggle="tab">
-                <i class="fa fa-2x fa-windows"></i>
+            <a href="#blinds-rdc-tab" class="button" aria-controls="blinds-rdc-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-th-large"></i> Rez-de-chaussée
             </a>
         </li>
         <li>
-            <a href="#switches-tab" class="mybtn"  aria-controls="switches-tab" role="tab" data-toggle="tab">
-                <i class="fa fa-2x fa-toggle-on"></i>
+            <a href="#blinds-etg-tab" class="button" aria-controls="blinds-etg-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-th-large"></i> Étage
             </a>
         </li>
         <li>
-            <a href="#groups-tab" class="mybtn"  aria-controls="groups-tab" role="tab" data-toggle="tab">
-                <i class="fa fa-2x fa-clone"></i>
+            <a href="#blinds-anx-tab" class="button" aria-controls="blinds-anx-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-th-large"></i> Annexe
             </a>
         </li>
         <li>
-            <a href="#forecast-tab" class="mybtn"  aria-controls="forecast-tab" role="tab" data-toggle="tab">
-                <i class="fa fa-2x fa-cloud"></i>
+            <a href="#switches-tab" class="button"  aria-controls="switches-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-toggle-on"></i> Interrupteurs
             </a>
         </li>
         <li>
-            <a href="#sensors-tab" class="mybtn"  aria-controls="sensors-tab" role="tab" data-toggle="tab">
-                <i class="fa fa-2x fa-rotate-270 fa-battery-half "></i>
-            </a>
-        </li>
-        <li class="disabled">
-            <a href="#programs-tab" class="mybtn"  aria-controls="programs-tab" role="tab" data-toggle="tab">
-                <i class="fa fa-2x fa-clock-o "></i>
+            <a href="#groups-tab" class="button"  aria-controls="groups-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-clone"></i> Groupes
             </a>
         </li>
         <li>
+            <a href="#forecast-tab" class="button"  aria-controls="forecast-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-cloud"></i> Météo
+            </a>
         </li>
         <li>
+            <a href="#sensors-tab" class="button"  aria-controls="sensors-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-rotate-270 fa-battery-half "></i> Senseurs
+            </a>
         </li>
     </ul>
 </div>
@@ -90,8 +97,14 @@
     <div class="container-fluid">
         <div class="row">
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="blinds-tab">
-                    <div class="col-xs-12 clearfix" id="blinds"></div>
+                <div role="tabpanel" class="tab-pane fade in active" id="blinds-rdc-tab">
+                    <div class="col-xs-12 clearfix" id="blinds-rdc"></div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="blinds-etg-tab">
+                    <div class="col-xs-12 clearfix" id="blinds-etg"></div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="blinds-anx-tab">
+                    <div class="col-xs-12 clearfix" id="blinds-anx"></div>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="switches-tab">
                     <div class="col-xs-12 clearfix">
@@ -146,25 +159,25 @@
 </div>
 
 <script id="blinds-template" type="x-tmpl-mustache">
-{{#blinds}}
-    <div id="domo-device-{{idx}}" class="col-xs-4 blind-box">
+{{#items}}
+    <div id="domo-device-{{idx}}" class="col-xs-3 blind-box">
         <div class="blind-label">
             <div id="anim-{{idx}}" class="blind" data-blind-rfy-state="{{Status}}"></div>
             {{Name}}
         </div>
         <div class="blind-commands">
-            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
-                <i class="fa fa-2x fa-fw fa-arrow-down"></i>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
+                <i class="fa fa-2x fa-fw fa-arrow-up"></i>
             </a>
             <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
                 <i class="fa fa-2x fa-fw fa-minus"></i>
             </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
-                <i class="fa fa-2x fa-fw fa-arrow-up"></i>
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
+                <i class="fa fa-2x fa-fw fa-arrow-down"></i>
             </a>
         </div>
     </div>
-{{/blinds}}
+{{/items}}
 </script>
 
 <script id="switches-template" type="x-tmpl-mustache">

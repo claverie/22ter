@@ -301,13 +301,32 @@ $(document).ready(function DomoticzW() {
         },
         convert: function (o) {
             var self = this;
-            var devices = { blinds: [], switches:[], sensors:[], others:[] };
+            var devices = { 
+                blinds: { items: [] },
+                blindsRDC: {items: [] },
+                blindsETG: {items: [] },
+                blindsANX: {items: [] },
+                switches:[],
+                sensors:[],
+                others:[]
+            };
             for (var prop in o) {
                 if (o.hasOwnProperty(prop)) {
                     switch(o[prop].Type) {
                         case "RFY":
                             o[prop].isBlind = true;
-                            devices.blinds.push(o[prop]);
+                            devices.blinds.items.push(o[prop]);
+                            var floor = parseInt(o[prop].PlanID);
+                            switch (floor) {
+                                case 2:
+                                    devices.blindsRDC.items.push(o[prop]);
+                                    break;
+                                case 3:
+                                    devices.blindsETG.items.push(o[prop]);
+                                    break;
+                                default:
+                                    devices.blindsANX.items.push(o[prop]);
+                            }
                             break;
                         case "Lighting 2":
                             o[prop].isSwitch = true;
@@ -323,7 +342,16 @@ $(document).ready(function DomoticzW() {
                     }
                 }
             }
-            devices.blinds.sort( function(a, b) {
+            devices.blinds.items.sort( function(a, b) {
+                return self.sort(a,b);
+            });
+            devices.blindsRDC.items.sort( function(a, b) {
+                return self.sort(a,b);
+            });
+            devices.blindsETG.items.sort( function(a, b) {
+                return self.sort(a,b);
+            });
+            devices.blindsANX.items.sort( function(a, b) {
                 return self.sort(a,b);
             });
             devices.switches.sort( function(a, b) {
@@ -420,7 +448,9 @@ $(document).ready(function DomoticzW() {
         },
         devices: function() {
             this.displayDayDatas();
-            this.displayBlinds();
+            this.displayBlinds("#blinds-rdc", Switches.devices.blindsRDC);
+            this.displayBlinds("#blinds-etg", Switches.devices.blindsETG);
+            this.displayBlinds("#blinds-anx", Switches.devices.blindsANX);
             this.displaySwitches();
         },
         displayDayDatas: function() {
@@ -431,9 +461,9 @@ $(document).ready(function DomoticzW() {
         setDomoData: function(key, value) {
             $('[data-domo-key="'+key+'"]').html(value);
         },
-        displayBlinds: function() {
-            $("#blinds").empty().html(Mustache.render(
-                $("#blinds-template").html(), Switches.devices
+        displayBlinds: function(id, blinds) {
+            $(id).empty().html(Mustache.render(
+                $("#blinds-template").html(), blinds
             ));
             $(".blind").each( function() {
                 $(this).attr("data-blind-state", function () {
@@ -444,8 +474,7 @@ $(document).ready(function DomoticzW() {
                         case "Closed":
                             return "closed";
                             break;
-                    }
-                    ;
+                    };
                     return "my";
                 });
             });
