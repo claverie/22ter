@@ -12,7 +12,6 @@
     <!-- -->
     <link href="dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="dist/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="dist/css/blind.css" rel="stylesheet" type="text/css">
     <link data-domo-css-color="dark" href="dist/css/domo-dark.css?v=" rel="stylesheet" type="text/css">
     <!--
         <link data-domo-css="light" href="dist/css/domo-light.css?v=" rel="stylesheet" type="text/css">
@@ -24,9 +23,14 @@
 <div class="left-bar">
     <div class="header">
         <img class="logo" src="dist/images/logo.jpg">
-        <span class="somedatas temperature">
-            <i class="fa fa-line-chart"></i> 23,8°c
-        </span>
+        <div class="somedatas">
+            <div class="temperature in">
+                <i class="fa fa-home"></i> 23,8°c
+            </div>
+            <div class="temperature out">
+                <i class="fa fa-image"></i> 12,4°c
+            </div>
+        </div>
     </div>
 
     <ul class="nav nav-pills nav-stacked">
@@ -66,6 +70,19 @@
             </a>
         </li>
     </ul>
+
+    <div class="bottom-action">
+        <a class="full-screen" >
+            <i class="fa fa-fw fa-2x fa-television"></i>
+        </a>
+        <a class="reload-page" >
+            <i class="fa fa-fw fa-2x fa-refresh "></i>
+        </a>
+        <a class="toggle-css" >
+            <i class="fa fa-fw fa-2x fa-shield "></i>
+        </a>
+    </div>
+
 </div>
 
 <div class="main-page">
@@ -74,9 +91,7 @@
         <div class="row">
             <div class="col-xs-12 header clearfix">
                 <div class="pull-right">
-                    <span class="somedatas temperature">
-                        <i class="fa fa-line-chart"></i> 23,8°c
-                    </span>
+                    <span class="somedatas" data-domo-var="date"></span>
                     <span class="somedatas sunset">
                         <i class="fa fa-sun-o"></i> 8h54
                     </span>
@@ -85,9 +100,8 @@
                     </span>
                 </div>
                 <div class="pull-left">
-                    <span data-domo-var="date"></span>
                     <span style="display:none" class="loading-datas fade in">
-                        <i class="fa fa-circle-o-notch fa-spin"></i> Mise à jour des données
+                         Mise à jour des données
                     </span>
                 </div>
             </div>
@@ -95,89 +109,86 @@
     </div>
 
     <div class="container-fluid">
-        <div class="row">
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="blinds-rdc-tab">
-                    <div class="col-xs-12 clearfix" id="blinds-rdc"></div>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="blinds-etg-tab">
-                    <div class="col-xs-12 clearfix" id="blinds-etg"></div>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="blinds-anx-tab">
-                    <div class="col-xs-12 clearfix" id="blinds-anx"></div>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="switches-tab">
-                    <div class="col-xs-12 clearfix">
-                        <h1>Interrupteurs</h1>
-                        <div id="switches"></div>
-                    </div>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="groups-tab">
-                    <div class="col-xs-12 clearfix" id="groups"></div>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="forecast-tab">
-                    <h1 class=""title">Forecast</h1>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="sensors-tab">
-                    <h1 class=""title">Sensors</h1>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="programs-tab">
-                    <h1 class=""title">Programs</h1>
-                </div>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in active blind-set" id="blinds-rdc-tab">
+                <div id="blinds-rdc"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade blind-set" id="blinds-etg-tab">
+                <div id="blinds-etg"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade blind-set" id="blinds-anx-tab">
+                <div id="blinds-anx"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="switches-tab">
+                <h1>Interrupteurs</h1>
+                <div id="switches"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="groups-tab">
+                <div class="col-xs-12 clearfix" id="groups"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="forecast-tab">
+                <h1 class=""title">Forecast</h1>
+                <div class="row" id="forecast-hourly"></div>
+
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="sensors-tab">
+                <h1 class=""title">Sensors</h1>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="programs-tab">
+                <h1 class=""title">Programs</h1>
             </div>
         </div>
     </div>
-
-    <!-- Static bottom navbar -->
-    <div class="navbar navbar-default navbar-fixed-bottom footer">
-        <div class="container-fluid">
-            <a class="mybtn full-screen" >
-                <i class="fa fa-2x fa-television"></i>
-            </a>
-            <a class="mybtn reload-page" >
-                <i class="fa fa-2x fa-refresh "></i>
-            </a>
-            <a class="mybtn toggle-css" >
-                <i class="fa fa-2x fa-shield "></i>
-            </a>
-
-            <div class="row" id="forecast-hourly"></div>
-        </div>
-    </div>
-
 </div>
 
 <div class="log">
     <div class="bar clearfix ">
         <div class="toggle pull-right">
-            <span class="open show"><i class="fa fa-2x fa-angle-double-down"></i></span>
-            <span class="closed hide"><i class="fa fa-2x fa-angle-double-up"></i></span>
+            <span class="open hide"><i class="fa fa-2x fa-angle-double-down"></i></span>
+            <span class="closed show"><i class="fa fa-2x fa-angle-double-up"></i></span>
         </div>
     </div>
-
-    <div class="clearfix fade in content"></div>
+    <div style="display:none" class="clearfix fade in content"></div>
 </div>
 
 <script id="blinds-template" type="x-tmpl-mustache">
-{{#items}}
-    <div id="domo-device-{{idx}}" class="col-xs-3 blind-box">
-        <div class="blind-label">
-            <div id="anim-{{idx}}" class="blind" data-blind-rfy-state="{{Status}}"></div>
+<div class="row">
+    {{#items}}
+    <div id="domo-device-{{idx}}" class="blind-box">
+        <div class="col-xs-2 blind-label push-left">
             {{Name}}
         </div>
-        <div class="blind-commands">
+        <div class="col-xs-4 blind-commands">
             <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
-                <i class="fa fa-2x fa-fw fa-arrow-up"></i>
+                <i class="fa fa-4x fa-fw fa-caret-up"></i>
             </a>
             <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
-                <i class="fa fa-2x fa-fw fa-minus"></i>
+                <i class="fa fa-4x fa-fw fa-minus"></i>
             </a>
             <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
-                <i class="fa fa-2x fa-fw fa-arrow-down"></i>
+                <i class="fa fa-4x fa-fw fa-caret-down"></i>
             </a>
         </div>
     </div>
-{{/items}}
+    {{/items}}
+</div>
+<div class="row">
+    <div class="blind-box blind-all clearfix">
+        <div class="col-xs-offset-6 col-xs-2 blind-label push-left">Tous
+        </div>
+        <div class="col-xs-4 blind-commands">
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#items}}{{{idx}}} {{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-up"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{#items}}{{{idx}}} {{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-minus"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#items}}{{{idx}}} {{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-down"></i>
+            </a>
+        </div>
+    </div>
+</div>
 </script>
 
 <script id="switches-template" type="x-tmpl-mustache">
@@ -251,7 +262,6 @@
 <script type="text/javascript" src="dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="dist/js/mustache.min.js"></script>
 <script type="text/javascript" src="dist/js/skycons.js"></script>
-<script type="text/javascript" src="dist/js/blind.js"></script>
 <script type="text/javascript" src="dist/js/log.js"></script>
 <script type="text/javascript" src="dist/js/domo.js"></script>
 

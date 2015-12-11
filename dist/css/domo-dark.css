@@ -7,38 +7,21 @@ body {
   background-color: #173a61;
   color: #ffffff;
 }
-.navbar {
-  background-color: #173a61;
-  border-color: #092544;
-  color: #ffffff;
-}
-.navbar.navbar-fixed-top,
-.navbar.navbar-fixed-bottom {
-  margin-left: 300px;
-}
-.navbar .navbar-brand img {
-  height: 40px;
-  border-radius: 50%;
-  margin-top: -10px;
-}
-.navbar .navbar-text {
-  font-size: 150%;
-  color: #ffffff;
-}
-.navbar.footer {
-  min-height: 70px;
-}
 .mybtn {
-  display: block;
+  width: 30%;
+  height: 6em;
+  display: inline-block;
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: #2f5988;
+  color: #6186af;
   box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7), 3px 3px 0 rgba(0, 0, 0, 0.12);
-  width: 80px;
-  height: 80px;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.75), 5px 5px rgba(0, 0, 0, 0.08), -1px -1px rgba(255, 255, 255, 0.55);
 }
 .mybtn i {
-  line-height: 80px;
+  line-height: 1.4em;
 }
 .left-bar {
   position: fixed;
@@ -53,9 +36,23 @@ body {
 .left-bar .header {
   font-size: 200%;
 }
+.left-bar .header .somedatas {
+  float: right;
+  margin-top: 30px;
+  margin-right: 20px;
+}
+.left-bar .header .somedatas .temperature i {
+  color: rgba(255, 255, 255, 0.5);
+}
+.left-bar .header .somedatas .temperature.in {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.left-bar .header .somedatas .temperature.out {
+  border-top: rgba(255, 255, 255, 0.5);
+}
 .left-bar .logo {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   margin-bottom: 15px;
   border-radius: 50%;
   margin: 20px;
@@ -80,6 +77,20 @@ body {
   padding-left: 0.5em;
   padding-right: 0.5em;
 }
+.left-bar .bottom-action {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  width: 100%;
+}
+.left-bar .bottom-action a {
+  margin: 0;
+  display: inline-block;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+}
 .main-page {
   position: fixed;
   left: 300px;
@@ -100,12 +111,22 @@ body {
 .main-page .tab-pane h1 {
   text-align: right;
 }
+.blind-set {
+  margin-top: 3em;
+}
 .blind-box .blind-label {
   padding-top: 20px;
-  font-size: 120%;
+  font-size: 160%;
+  text-align: right;
 }
 .blind-box .blind-commands .mybtn {
   margin-left: 0;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.blind-all {
+  margin-top: 3em;
+  color: orange;
 }
 .fhour .fhour-hour {
   position: absolute;
