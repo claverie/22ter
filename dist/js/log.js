@@ -39,6 +39,7 @@ Log.prototype.out = function(message, level, date) {
         day: "numeric",
         hour: "numeric",
         minute: "numeric",
+        second: "numeric",
         hour12: false
     });
     this.elt.prepend(

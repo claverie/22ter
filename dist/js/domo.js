@@ -312,6 +312,7 @@ $(document).ready(function DomoticzW() {
             };
             for (var prop in o) {
                 if (o.hasOwnProperty(prop)) {
+                    $log.debug(o[prop].Type+" / "+o[prop].Name+"  Data="+o[prop].Data);
                     switch(o[prop].Type) {
                         case "RFY":
                             o[prop].isBlind = true;
@@ -363,6 +364,7 @@ $(document).ready(function DomoticzW() {
             devices.others.sort( function(a, b) {
                 return self.sort(a,b);
             });
+            console.log(devices);
             return devices;
         },
         load: function(handler) {
@@ -457,6 +459,7 @@ $(document).ready(function DomoticzW() {
             UI.setDomoData("sunrise", DayInfos.datas.sunrise);
             UI.setDomoData("sunset", DayInfos.datas.sunset);
             UI.setDomoData("today", DayInfos.datas.today);
+            UI.setDomoData("temp.in", Switches.devices.sensors[0].Temp);
         },
         setDomoData: function(key, value) {
             $('[data-domo-key="'+key+'"]').html(value);
@@ -477,29 +480,6 @@ $(document).ready(function DomoticzW() {
                     };
                     return "my";
                 });
-            });
-            var $blinds = Blinds();
-            $('[data-domo-type="RFY"]').on("click", function() {
-                var id = "anim-"+$(this).data("domo-idx");
-                var action = $(this).data("domo-action");
-                if (typeof $blinds[id] !== "undefined" ) {
-                    switch (action) {
-                        case "Off":
-                            $blinds[id].up();
-                            break;
-                        case "On":
-                            $blinds[id].down();
-                            break;
-                        case "Stop":
-                            $blinds[id].my();
-                            break;
-                        default:
-                            $log.warning("Blind[" + id + "] invalid command : "+action+".");
-                    }
-                } else {
-                    $log.warning("Blind command("+action+") ["+id+"] not found.");
-                }
-
             });
         },
         displaySwitches: function() {
@@ -539,6 +519,8 @@ $(document).ready(function DomoticzW() {
     $log.info("L'application est chargée.");
 
     var initScreen = function() {
+        $log.debug("Loading datas...");
+        $(".logo").addClass("fa fa-spin");
         $(".loading-datas").fadeIn();
         $('[data-domo-var="date"]').html(myDate(Date.now()).day);
         Switches.load( function() {
@@ -548,11 +530,14 @@ $(document).ready(function DomoticzW() {
                     $("#groups-template").html(), AppGroups
                 ));
                 $(".loading-datas").fadeOut();
+                $(".logo").removeClass("fa fa-spin");
+
                 /*
-                 setTimeout(function () {
-                 initScreen();
-                 }, 50000 );
+                setTimeout(function () {
+                    initScreen();
+                }, 630000 );
                  */
+
             });
         });
     };
