@@ -1,5 +1,13 @@
 $(document).ready(function DomoticzW() {
 
+    var Params = {
+        temp: {
+            rdc: 25,
+            floor: 26,
+            ext: 0
+        }
+    };
+
     var cssLoader = {
         reload: function() {
             $("[data-domo-css]").each( function() {
@@ -36,14 +44,17 @@ $(document).ready(function DomoticzW() {
         var optionsHour = {
             hour: "numeric",
             minute: "numeric",
+            second: "numeric",
             hour12: false
         };
         var nD = new Date((timestamp));
-        var sD = {
+        return {
             "day" : nD.toLocaleString("fr-FR", optionsDay),
-            "hour" : nD.toLocaleString("fr-FR", optionsHour)
+            "hour" : nD.toLocaleString("fr-FR", optionsHour),
+            toString: function() {
+                return nD.toLocaleString("fr-FR", optionsDay)+" "+nD.toLocaleString("fr-FR", optionsHour);
+            }
         };
-        return sD;
     };
 
     var Forecast = {
@@ -51,7 +62,7 @@ $(document).ready(function DomoticzW() {
         lastUpdate: null,
         datas: null,
         parameters: null,
-        interval: 3600 * 1000,
+        interval: 30* 60 * 1000,
         init: function (handler) {
             this.updateHandler = handler;
             var self = this;
@@ -65,13 +76,19 @@ $(document).ready(function DomoticzW() {
                     var tmp = JSON.parse(data);
                     self.parameters = tmp.parameters;
                     self.retrieve();
-                });
+                },
+                function () {
+                    $log.danger("Erreur de récupération de la configration Forecast.");
+                }
+            );
         },
         retrieve: function() {
             var self = this;
-            this.lastUpdate = localStorage.getItem("forecast.lastUpdate");
+            var now = Date.now();
             this.datas = JSON.parse(localStorage.getItem("forecast.datas"));
-            if (this.lastUpdate === null || (this.lastUpdate + this.interval) < Date.now()) {
+            this.lastUpdate = parseInt(localStorage.getItem("forecast.lastUpdate"));
+            if (this.lastUpdate === null || (this.lastUpdate + this.interval) < now) {
+                $log.info("Appel de Forecast.io [date : "+myDate(this.lastUpdate).toString()+"]");
                 var urlE = "/" +this.parameters.key +  "/" + this.parameters.loc;
                 urlE +=  "?callback=handleForecastResponse&"+ $.param(self.parameters.options);
                 var retrieve = $.ajax({
@@ -84,6 +101,11 @@ $(document).ready(function DomoticzW() {
                     }
                 });
             } else {
+                $log.info("Utilisation des données météo locales [date : "+myDate(this.lastUpdate).toString()+"].");
+                $log.info("Météo, récupération des données dans "+self.interval/(60*1000)+" minutes.")
+                setTimeout( function() {
+                    self.retrieve();
+                }, self.interval );
                 self.updateHandler();
             }
         },
@@ -97,6 +119,7 @@ $(document).ready(function DomoticzW() {
                 day: "numeric",
                 hour12: false
             };
+            console.log("Forecast.data", data);
             this.datas = data;
             for (var it=0; it<this.datas.daily.data.length; it++) {
                 this.datas.daily.data[it].dateTime = myDate((this.datas.daily.data[it].time * 1000));
@@ -111,6 +134,7 @@ $(document).ready(function DomoticzW() {
             localStorage.setItem("forecast.lastUpdate", self.lastUpdate);
             localStorage.setItem("forecast.datas", JSON.stringify(this.datas));
             self.updateHandler();
+            $log.info("Météo, récupération des données dans "+self.interval/(60*1000)+" minutes.")
             setTimeout( function() {
                 self.retrieve();
             }, self.interval );
@@ -136,20 +160,11 @@ $(document).ready(function DomoticzW() {
                 null,
                 function(jsonGroups) {
                     var data = JSON.parse(jsonGroups);
-                    self.groups = data.groups;
-                    for (var it= 0; it<self.groups.length; it++) {
-                        for (var id= 0; id<self.groups[it].list.length; id++) {
-                            self.groups[it].id = "G"+it;
-                            self.groups[it].list[id].last = true;
-                            if (id>0) self.groups[it].list[(id-1)].last = false;
-                            self.groups[it].haveBlind = function(idx) {
-                                for (var ib=0; ib<Switches.devices.blinds.length; ib++) {
-                                    if (parseInt(Switches.devices.blinds[ib].idx) === idx) {
-                                        return true;
-                                    }
-                                }
-                                return false;
-                            }(self.groups[it].list[id].idx);
+                    self.groups = new Array(data.groups.length); //data.groups;
+                    for (var it= 0; it<data.groups.length; it++) {
+                        self.groups[it] = { label: data.groups[it].label, items: [] };
+                        for (var id= 0; id<data.groups[it].list.length; id++) {
+                            self.groups[it].items.push( Switches.devices.byIdx[data.groups[it].list[id].idx] );
                         }
                     }
                     if (typeof handler === "function") {
@@ -215,64 +230,6 @@ $(document).ready(function DomoticzW() {
                 "GET"
             )
         }
-    }
-
-    var Switch = {
-        lastStatus: null,
-        $domElt: null,
-        properties: [ ],
-        select: function(idxString) {
-            if (typeof idxString != String) {
-                var idxString = idxString.toString();
-            }
-            var idxList = idxString.split(" ");
-            this.properties = [ ];
-            for (var isw=0; isw<idxList.length; isw++) {
-                if (idxList[isw]) {
-                    for (var i = 0; i < Switches.devices.length; i++) {
-                        if (parseInt(Switches.devices[i].idx) === parseInt(idxList[isw])) {
-                            this.$domElt = $('#domo-device-' + idxList[isw]);
-                            this.properties.push(Switches.devices[i]);
-                            break;
-                        }
-                    }
-                }
-            }
-            return this;
-        },
-        run: function( o ) {
-            var self = this;
-            var order = o;
-            var command = "";
-            for (var isw=0; isw<this.properties.length; isw++) {
-                var currentSwitch = this.properties[isw];
-                command = "type=command&param=switchlight&idx="+currentSwitch.idx+"&switchcmd="+o;
-                DomoServer.init().request(
-                    command,
-                    "GET",
-                    null,
-                    null,
-                    function(data) {
-                        domoLog.write(currentSwitch.Name, order, data.status);
-                        self.lastStatus = data;
-                    }
-                )
-            }
-            return;
-        },
-        showState: function() {
-            var self = this;
-            this.setState(this.lastStatus.status);
-            setTimeout( function() {
-                self.clearState();
-            }, 2000);
-        },
-        clearState: function() {
-            this.setState('--');
-        },
-        setState: function(state) {
-            this.$domElt.find('.status').html(state);
-        }
     };
 
     var DayInfos = {
@@ -301,18 +258,20 @@ $(document).ready(function DomoticzW() {
         },
         convert: function (o) {
             var self = this;
-            var devices = { 
+            var devices = {
+                byIdx: [],
                 blinds: { items: [] },
                 blindsRDC: {items: [] },
                 blindsETG: {items: [] },
                 blindsANX: {items: [] },
                 switches:[],
-                sensors:[],
+                sensors: [],
                 others:[]
             };
             for (var prop in o) {
                 if (o.hasOwnProperty(prop)) {
-                    $log.debug(o[prop].Type+" / "+o[prop].Name+"  Data="+o[prop].Data);
+                    //$log.debug(o[prop].Type+" / "+o[prop].Name+"  Data="+o[prop].Data);
+                    devices.byIdx[o[prop].idx] = o[prop];
                     switch(o[prop].Type) {
                         case "RFY":
                             o[prop].isBlind = true;
@@ -396,7 +355,7 @@ $(document).ready(function DomoticzW() {
                 var idx = idxList[isw];
                 var o = order;
                 command = "type=command&param=switchlight&idx="+idx+"&switchcmd="+o;
-                $log.info(idx+": envoi de la command ["+o+"]");
+                $log.info(Switches.devices.byIdx[idx].Name+": envoi de la command ["+o+"]");
                 DomoServer.init().request(
                     command,
                     "GET",
@@ -440,13 +399,16 @@ $(document).ready(function DomoticzW() {
         },
         forecast: function() {
             this.forecastHourly();
-            var skycons = new Skycons({"color": "#0F0056"});
+            var skycons = new Skycons({"color": "#F00"});
             $("canvas[data-domo-icon]")
                 .each( function() {
+                    var self = $(this);
+                    skycons.color = (function () {
+                        return self.parent().css("color");
+                    }());
                     skycons.add(this, $(this).data('domo-icon'));
                     skycons.play();
                 });
-
         },
         devices: function() {
             this.displayDayDatas();
@@ -459,10 +421,14 @@ $(document).ready(function DomoticzW() {
             UI.setDomoData("sunrise", DayInfos.datas.sunrise);
             UI.setDomoData("sunset", DayInfos.datas.sunset);
             UI.setDomoData("today", DayInfos.datas.today);
-            UI.setDomoData("temp.in", Switches.devices.sensors[0].Temp);
+            UI.setDomoData("temp.floor", Switches.devices.byIdx[Params.temp.floor].Temp, Switches.devices.byIdx[Params.temp.floor].Name);
+            UI.setDomoData("temp.rdc", Switches.devices.byIdx[Params.temp.rdc].Temp, Switches.devices.byIdx[Params.temp.rdc].Name);
+            UI.setDomoData("humidity.rdc", Switches.devices.byIdx[Params.temp.rdc].Humidity);
         },
-        setDomoData: function(key, value) {
-            $('[data-domo-key="'+key+'"]').html(value);
+        setDomoData: function(key, value, title) {
+            $('[data-domo-key="'+key+'"]')
+                .html(value)
+                .attr("title", title || "" );
         },
         displayBlinds: function(id, blinds) {
             $(id).empty().html(Mustache.render(
@@ -483,95 +449,120 @@ $(document).ready(function DomoticzW() {
             });
         },
         displaySwitches: function() {
+            var self = this;
             $("#switches").empty().html(Mustache.render(
                 $("#switches-template").html(), Switches.devices
             ));
-        }
-    };
-
-    Forecast.init( function() {
-        Forecast.datas.hourly.data = Forecast.datas.hourly.data.slice(0, 12);
-        UI.forecast();
-        return;
-
-        $("#forecast-current").empty().html(Mustache.render(
-            $("#forecast-template").html(), meteo.currently
-        ));
-        $("#forecast-day").empty().html(Mustache.render(
-            $("#forecast-template").html(), meteo.daily
-        ));
-        $("#forecast-week").empty().html(Mustache.render(
-            $("#forecast-template").html(), meteo.hourly
-        ));
-        var d = myDate(parseInt(localStorage.getItem("forecast.lastUpdate")));
-        UI.setDomoData("forecast.uptime", d.day+" "+ d.hour);
-    });
-
-    $('body').on("click", '[data-domo-action]', function() {
-        Switches.run($(this).data('domo-idx'), $(this).data('domo-action'));
-    });
-
-    var ws = window.screen;
-    if (ws.availHeight < 600 || ws.availWidth < 960) {
-        alert("Screen too small "+ws.availHeight+"x"+ws.availWidth)
-    }
-
-    $log.info("L'application est chargée.");
-
-    var initScreen = function() {
-        $log.debug("Loading datas...");
-        $(".logo").addClass("fa fa-spin");
-        $(".loading-datas").fadeIn();
-        $('[data-domo-var="date"]').html(myDate(Date.now()).day);
-        Switches.load( function() {
-            UI.devices();
-            AppGroups.load( function() {
-                $("#groups").empty().html(Mustache.render(
-                    $("#groups-template").html(), AppGroups
-                ));
-                $(".loading-datas").fadeOut();
-                $(".logo").removeClass("fa fa-spin");
-
-                /*
-                setTimeout(function () {
-                    initScreen();
-                }, 630000 );
-                 */
-
+            $("[data-domo-switch-state]").each( function() {
+                self.setSwitch($(this));
             });
-        });
-    };
-    initScreen();
-
-    $(".reload-page").on("click", function () {
-        initScreen();
-    });
-    $(".full-screen").on("click", function () {
-        toggleFullScreen();
-    });
-    var toggleFullScreen = function() {
-        if (!document.fullscreenElement &&    // alternative standard method
-            !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            } else if (document.documentElement.msRequestFullscreen) {
-                document.documentElement.msRequestFullscreen();
-            } else if (document.documentElement.mozRequestFullScreen) {
-                document.documentElement.mozRequestFullScreen();
-            } else if (document.documentElement.webkitRequestFullscreen) {
-                document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
+        },
+        setSwitch: function( $elt ) {
+            if ($elt.data("domo-switch-state") == "On") {
+                $elt.children("i").removeClass("fa-toggle-off").addClass("fa-toggle-on");
+            } else {
+                $elt.children("i").removeClass("fa-toggle-on").addClass("fa-toggle-off");
             }
         }
     };
+
+Forecast.init( function() {
+    console.log("Forecast.datas", Forecast.datas);
+    $("#forecast-current-icon").data("domo-icon", Forecast.datas.currently.icon);
+    UI.setDomoData("forecast-current-temperature", Forecast.datas.currently.temperature);
+    Forecast.datas.hourly.data = Forecast.datas.hourly.data.slice(0, 12);
+    UI.forecast();
+    return;
+
+    $("#forecast-current").empty().html(Mustache.render(
+        $("#forecast-template").html(), meteo.currently
+    ));
+    $("#forecast-day").empty().html(Mustache.render(
+        $("#forecast-template").html(), meteo.daily
+    ));
+    $("#forecast-week").empty().html(Mustache.render(
+        $("#forecast-template").html(), meteo.hourly
+    ));
+    var d = myDate(parseInt(localStorage.getItem("forecast.lastUpdate")));
+    UI.setDomoData("forecast.uptime", d.day+" "+ d.hour);
+});
+
+var ws = window.screen;
+if (ws.availHeight < 600 || ws.availWidth < 960) {
+    alert("Screen too small "+ws.availHeight+"x"+ws.availWidth)
+}
+
+$('body').on("click", '[data-domo-action]', function() {
+    Switches.run($(this).data('domo-idx'), $(this).data('domo-action'));
+});
+$('body').on("click", '[data-domo-switch-state]', function() {
+    console.log($(this), $(this).data("domo-switch-state"));
+    if ( $(this).data("domo-switch-state") == "On") {
+        Switches.run($(this).data('domo-idx'), "off");
+        $(this).data("domo-switch-state", "Off");
+    } else {
+        Switches.run($(this).data('domo-idx'), "on");
+        $(this).data("domo-switch-state", "On");
+    }
+    UI.setSwitch($(this));
+});
+
+$log.info("L'application est chargée.");
+
+var initScreen = function() {
+    $log.debug("Loading datas...");
+    $(".logo").addClass("fa fa-spin");
+    $(".loading-datas").fadeIn();
+    $('[data-domo-var="date"]').html(myDate(Date.now()).day);
+    Switches.load( function() {
+        UI.devices();
+        AppGroups.load( function() {
+            $("#groups").empty().html(Mustache.render(
+                $("#groups-template").html(), AppGroups
+            ));
+            $(".loading-datas").fadeOut();
+            $(".logo").removeClass("fa fa-spin");
+
+            /*
+             setTimeout(function () {
+             initScreen();
+             }, 630000 );
+             */
+
+        });
+    });
+};
+initScreen();
+
+$(".reload-page").on("click", function () {
+    initScreen();
+});
+$(".full-screen").on("click", function () {
+    toggleFullScreen();
+});
+var toggleFullScreen = function() {
+    if (!document.fullscreenElement &&    // alternative standard method
+        !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) {
+            document.documentElement.msRequestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) {
+            document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+};
 
 });

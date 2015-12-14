@@ -12,7 +12,7 @@
     <!-- -->
     <link href="dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="dist/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link data-domo-css-color="dark" href="dist/css/domo-dark.css?v=" rel="stylesheet" type="text/css">
+    <link data-domo-css-color="dark" href="dist/css/domo-dark.css?v=" data-domo-css="Y" rel="stylesheet" type="text/css">
     <!--
         <link data-domo-css="light" href="dist/css/domo-light.css?v=" rel="stylesheet" type="text/css">
         <link data-domo-css="main" href="dist/css/domo.css?v=" rel="stylesheet" type="text/css">
@@ -23,16 +23,18 @@
 <div class="left-bar">
     <div class="header">
         <img class="logo reload-page" src="dist/images/logo.jpg">
-        <div class="somedatas">
-            <div class="temperature in">
-                <i class="fa fa-fw fa-home"></i> <span data-domo-key="temp.in">--</span>°c
-            </div>
-            <div class="temperature out">
-                <i class="fa fa-fw fa-image"></i> 12,4°c
+        <div class="home">
+            <div class="somedatas">
+                <div class="temperature up">
+                    <span data-domo-key="temp.floor">--</span>°c
+                </div>
+                <div class="temperature down">
+                    <span data-domo-key="temp.rdc">--</span>°c
+                    <span class="humidity"><span data-domo-key="humidity.rdc">--</span>%</span>
+                </div>
             </div>
         </div>
     </div>
-
     <ul class="nav nav-pills nav-stacked">
         <li class="active">
             <a href="#blinds-rdc-tab" class="button" aria-controls="blinds-rdc-tab" role="tab" data-toggle="tab">
@@ -50,13 +52,13 @@
             </a>
         </li>
         <li>
-            <a href="#switches-tab" class="button"  aria-controls="switches-tab" role="tab" data-toggle="tab">
-                <i class="fa fa-toggle-on"></i> Interrupteurs
+            <a href="#groups-tab" class="button"  aria-controls="groups-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-th"></i> Groupes
             </a>
         </li>
         <li>
-            <a href="#groups-tab" class="button"  aria-controls="groups-tab" role="tab" data-toggle="tab">
-                <i class="fa fa-clone"></i> Groupes
+            <a href="#switches-tab" class="button"  aria-controls="switches-tab" role="tab" data-toggle="tab">
+                <i class="fa fa-toggle-on"></i> Interrupteurs
             </a>
         </li>
         <li>
@@ -74,6 +76,9 @@
     <div class="bottom-action">
         <a class="full-screen" >
             <i class="fa fa-fw fa-2x fa-television"></i>
+        </a>
+        <a class="reload-css" >
+            <i class="fa fa-fw fa-2x fa-upload "></i>
         </a>
         <a class="toggle-css" >
             <i class="fa fa-fw fa-2x fa-shield "></i>
@@ -94,6 +99,10 @@
                     </span>
                     <span class="somedatas sunrise">
                         <i class="fa fa-moon-o"></i> 17h28
+                    </span>
+                    <span class="somedatas temperature">
+                        <canvas id="forecast-current-icon" data-domo-icon="" width="30px" height="30px"></canvas>
+                        <span data-domo-key="forecast-current-temperature">--</span>°c
                     </span>
                 </div>
                 <div class="pull-left">
@@ -117,15 +126,13 @@
                 <div id="blinds-anx"></div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="switches-tab">
-                <h1>Interrupteurs</h1>
                 <div id="switches"></div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="groups-tab">
                 <div class="col-xs-12 clearfix" id="groups"></div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="forecast-tab">
-                <h1 class=""title">Forecast</h1>
-                <div class="row" id="forecast-hourly"></div>
+                <div id="forecast-hourly"></div>
 
             </div>
             <div role="tabpanel" class="tab-pane fade" id="sensors-tab">
@@ -149,13 +156,27 @@
 </div>
 
 <script id="blinds-template" type="x-tmpl-mustache">
-<div class="row">
-    {{#items}}
-    <div id="domo-device-{{idx}}" class="blind-box">
-        <div class="col-xs-2 blind-label push-left">
-            {{Name}}
+<div class="devices-group">
+    <div class="row">
+        <div class="col-xs-offset-6 col-xs-2 device-label">Tous</div>
+        <div class="col-xs-4 device-commands">
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-up"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-minus"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-down"></i>
+            </a>
         </div>
-        <div class="col-xs-4 blind-commands">
+    </div>
+ </div>
+ <div class="devices-group">
+   <div class="row">
+        {{#items}}
+        <div class="col-xs-2 device-label">{{Name}}</div>
+        <div class="col-xs-4 device-commands">
             <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
                 <i class="fa fa-4x fa-fw fa-caret-up"></i>
             </a>
@@ -166,91 +187,73 @@
                 <i class="fa fa-4x fa-fw fa-caret-down"></i>
             </a>
         </div>
-    </div>
-    {{/items}}
-</div>
-<div class="row">
-    <div class="blind-box blind-all clearfix">
-        <div class="col-xs-offset-6 col-xs-2 blind-label push-left">Tous
-        </div>
-        <div class="col-xs-4 blind-commands">
-            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#items}}{{{idx}}} {{/items}}" data-domo-type="RFY">
-                <i class="fa fa-4x fa-fw fa-caret-up"></i>
-            </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{#items}}{{{idx}}} {{/items}}" data-domo-type="RFY">
-                <i class="fa fa-4x fa-fw fa-minus"></i>
-            </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#items}}{{{idx}}} {{/items}}" data-domo-type="RFY">
-                <i class="fa fa-4x fa-fw fa-caret-down"></i>
-            </a>
-        </div>
+        {{/items}}
     </div>
 </div>
 </script>
 
 <script id="switches-template" type="x-tmpl-mustache">
-{{#switches}}
-<div id="domo-device-{{idx}} class="blind-box">
-        <div class="blind-label">
+<div class="row">
+    {{#switches}}
+    <div class="devices-group">
+        <div class="col-xs-2 device-label">
         {{Name}}
-        </div>
-        <div class="blind-commands">
-            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{idx}}" data-domo-type="{{Type}}">
-                <i class="fa fa-2x fa-fw fa-toggle-on"></i>
-            </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{idx}}" data-domo-type="{{Type}}">
-                <i class="fa fa-2x fa-fw fa-toggle-off"></i>
-            </a>
-        </div>
     </div>
-{{/switches}}
+    <div class="col-xs-4 device-command">
+        <a class="inter-btn" href="#" data-domo-switch-state="{{Status}}"  data-domo-idx="{{idx}}" data-domo-type="{{Type}}">
+            <i class="fa fa-4x fa-fw fa-togg"></i>
+        </a>
+    </div>
+    {{/switches}}
+</div>
 </script>
 
 <script id="groups-template" type="x-tmpl-mustache">
-<h1>Groupes</h1>
-{{#groups}}
-    {{#haveBlind}}
-    <div id="domo-group-id" class="blind-box">
-        <div class="blind-label">{{label}}</div>
-        <div class="blind-commands">
-            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#list}}{{idx}}{{^last}},{{/last}}{{/list}}" data-domo-type="{{Type}}">
-                <i class="fa fa-2x fa-fw fa-arrow-up"></i>
+<div class="devices-group">
+    <div class="row">
+    {{#groups}}
+        <div class="col-xs-2 device-label">{{label}}</div>
+        <div class="col-xs-4 device-commands">
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-up"></i>
             </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{#list}}{{idx}}{{^last}},{{/last}}{{/list}}" data-domo-type="{{Type}}">
-                <i class="fa fa-2x fa-fw fa-minus"></i>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-minus"></i>
             </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#list}}{{idx}}{{^last}},{{/last}}{{/list}}" data-domo-type="{{Type}}">
-                <i class="fa fa-2x fa-fw fa-arrow-down"></i>
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-down"></i>
             </a>
         </div>
+    {{/groups}}
     </div>
-    {{/haveBlind}}
-    {{^haveBlind}}
-    <div id="domo-group-{{idx}} class="blind-box">
-        <div class="blind-label">{{label}}</div>
-            <div class="blind-commands">
-                <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#list}}{{idx}}{{^last}},{{/last}}{{/list}}" data-domo-type="{{Type}}">
-                    <i class="fa fa-2x fa-fw fa-toggle-on"></i>
-                </a>
-                <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#list}}{{idx}}{{^last}},{{/last}}{{/list}}" data-domo-type="{{Type}}">
-                   <i class="fa fa-2x fa-fw fa-toggle-off"></i>
-                </a>
-            </div>
-        </div>
-     </div>
-    {{/haveBlind}}
-{{/groups}}
+</div>
 </script>
 
 
 <script id="forecast-hourly-template" type="x-tmpl-mustache">
-{{#data}}
-    <div class="col-xs-1 fhour">
-        <canvas id="{{time}}" data-domo-icon={{icon}} width="60px" height="60px"></canvas>
-        <div class="fhour-hour">{{dateTime.hour}}</div>
-        <div class="fhour-summary">{{summary}}</div>
+<div class="row">
+    <div class="cols-xs-12">
+        <h1 class="title">Aujourd'hui
+        </h1>
     </div>
-{{/data}}
+</div>
+<div class="row">
+    {{#data}}
+    <div class="col-xs-1 fhour">
+        <div class="fhour-summary">{{summary}}</div>
+        <canvas id="{{time}}" data-domo-icon={{icon}} width="60px" height="60px"></canvas>
+        <div class="fhour-temp">{{temperature}}°c</div>
+        <div class="fhour-hour">{{dateTime.hour}}</div>
+    </div>
+    {{/data}}
+</div><div class="row">
+    <div class="cols-xs-12">
+        <h1 class="title">Les jour à venir
+        </h1>
+    </div>
+</div>
+<div class="row">
+</div>
 </script>
 
 

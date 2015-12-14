@@ -16,24 +16,53 @@ body {
   color: @fg-color;
 }
 
+.devices-group {
+    padding-top: 3em;
+    .device-label {
+      font-size: 170%;
+      line-height: 3em;
+    }
+    .device-commands {
+      padding-bottom: 2em;
+    }
+}
+
+.inter-btn {
+  display:inline-block;
+  height: 6em;
+  width: 6em;
+  line-height: 3em;
+  line-height: 8em;
+  text-align: center;
+  color: @fg-color;
+}
 .mybtn {
   width: 30%;
   height: 6em;
-  display: inline-block;
+  display: block;
   text-align: center;
+  float: left;
 
-  border-radius: 5px;
-  border: 1px solid rgba(255,255,255,0.2);
+  border:1px solid red;
+  border-width: 2px;
+  border-style: solid;
+  border-color: rgba(255,255,255,0.4) rgba(0,0,0,0.4) rgba(0,0,0,0.4) rgba(255,255,255,0.4);
 
   background-color: @btn-bg-color;
-  color: @btn-fg-color;
+  color: @btn-bg-color;
 
   box-shadow: 1px 1px 0 rgba(0,0,0,0.7), 3px 3px 0 rgba(0,0,0,0.12);
 
   box-shadow: 1px 1px 0 rgba(0,0,0,0.7);
 
-  text-shadow: 1px 1px rgba(0,0,0,0.75), 5px 5px rgba(0,0,0,0.08), -1px -1px rgba(255,255,255,0.55);
-
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.85), 2px 2px rgba(0, 0, 0, 0.45), -1px -1px rgba(255, 255, 255, 0.55);
+  &:first-child {
+    border-radius: 5px 0 0 5px;
+    border-left: 0;
+  }
+  &:last-child {
+    border-radius: 0 5px 5px 0;
+  }
   i {
     line-height: 1.4em;
   }
@@ -49,20 +78,28 @@ body {
   border-right: 1px solid @border-color;
   box-shadow: inset -1px 0 0 @border-shadow;
   .header {
-    font-size: 200%;
-    .somedatas {
-      float:right;
-      margin-top: 30px;
-      margin-right: 20px;
-      .temperature {
-        i {
-          color:rgba(255,255,255,0.50);
-        }
-        &.in {
-          border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        &.out {
-          border-top:rgba(255,255,255,0.5);
+    padding: 20px;
+    .home {
+      display: inline-block;
+      margin: 15px 0 15px 0;
+      padding-left: 20px;
+      .somedatas {
+        line-height: 2em;
+        display: inline-block;
+        .temperature {
+          font-size: 200%;
+          .humidity {
+            font-size: 75%;
+          }
+          i {
+            color: rgba(255, 255, 255, 0.50);
+          }
+          &.up {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+          }
+          &.down {
+            border-top: rgba(255, 255, 255, 0.5);
+          }
         }
       }
     }
@@ -70,9 +107,8 @@ body {
   .logo {
     width: @logo-size;
     height: @logo-size;
-    margin-bottom: 15px;
     border-radius: 50%;
-    margin: 20px;
+    vertical-align: top;
   }
   ul {
     li {
@@ -189,8 +225,8 @@ body {
     cursor: pointer;
   }
   .content {
-    overflow-y: scroll;
-    max-height:30%;
+    overflow-y: auto;
+    max-height:200px;
     padding:20px;
     background-color: rgba(0, 0, 0, 0.5);
     color: #FFF;
@@ -215,4 +251,8 @@ body {
       }
     }
   }
+}
+
+[data-domo-icon] {
+  vertical-align: text-top;
 }
