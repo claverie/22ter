@@ -50,6 +50,7 @@ $(document).ready(function DomoticzW() {
         var nD = new Date();
         nD.setTime(timestamp);
         return {
+            shortDay : nD.getDate(),
             day : nD.toLocaleString("fr-FR", optionsDay),
             hour: nD.toLocaleString("fr-FR", optionsHour),
             string: nD.toLocaleString("fr-FR", optionsDay)+" "+nD.toLocaleString("fr-FR", optionsHour)
@@ -72,13 +73,21 @@ $(document).ready(function DomoticzW() {
                 null,
                 null,
                 function(data) {
-                    var tmp = JSON.parse(data);
-                    self.parameters = tmp.parameters;
-                    self.retrieve();
+                    var tmp = null;
+                    try {
+                        var tmp = null;
+                        tmp = typeof data === "string" ? JSON.parse(data) : data;
+                        self.parameters = tmp.parameters;
+                        self.retrieve();
+                    } catch (e)
+                    {
+                        console.log(e);
+                    }
                 },
                 function () {
                     $log.danger("Erreur de récupération de la configration Forecast.");
-                }
+                },
+                true
             );
         },
         programUpdate: function() {
@@ -93,7 +102,7 @@ $(document).ready(function DomoticzW() {
             var self = this;
             var now = Date.now();
             this.datas = JSON.parse(localStorage.getItem("forecast.datas"));
-            this.lastUpdate = parseInt(localStorage.getItem("forecast.lastUpdate"));
+            this.lastUpdate = parseInt(localStorage.getItem("forecast.lastUpdate")) || null;
             if (this.lastUpdate === null || (this.lastUpdate + this.interval) < now) {
                 $log.info("Appel de Forecast.io...");
                 var urlE = "/" +this.parameters.key +  "/" + this.parameters.loc;
@@ -116,22 +125,18 @@ $(document).ready(function DomoticzW() {
         parseResponse: function(data) {
             var self = this;
             self.lastUpdate = Date.now();
-            var options = {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour12: false
-            };
             console.log("Forecast.data", data);
             this.datas = data;
             for (var it=0; it<this.datas.daily.data.length; it++) {
                 this.datas.daily.data[it].dateTime = myDate((this.datas.daily.data[it].time * 1000));
                 this.datas.daily.data[it].dateTime.hour = this.datas.daily.data[it].dateTime.hour.substr(0,2);
+                this.datas.daily.data[it].apparentTemperatureMin = Math.round(this.datas.daily.data[it].apparentTemperatureMin*10)/10;
+                this.datas.daily.data[it].apparentTemperatureMax = Math.round(this.datas.daily.data[it].apparentTemperatureMax*10)/10;
             }
             for (var it=0; it<this.datas.hourly.data.length; it++) {
                 this.datas.hourly.data[it].dateTime = myDate((this.datas.hourly.data[it].time * 1000));
                 this.datas.hourly.data[it].dateTime.hour = this.datas.hourly.data[it].dateTime.hour.substr(0,2);
+                this.datas.hourly.data[it].temperature = Math.round(this.datas.hourly.data[it].temperature*10)/10;
             }
             this.datas.currently.dateTime = myDate((this.datas.currently.time * 1000));
             var itab = [ $.extend({}, this.datas.currently) ];
@@ -159,11 +164,12 @@ $(document).ready(function DomoticzW() {
             Server.request(
                 command,
                 "GET",
-                null,
+                { dataType: 'json'},
                 null,
                 function(jsonGroups) {
-                    var data = JSON.parse(jsonGroups);
-                    self.groups = new Array(data.groups.length); //data.groups;
+                    var data = null;
+                    data = typeof jsonGroups === "string" ? JSON.parse(jsonGroups) : jsonGroups;
+                    self.groups = new Array(data.groups.length);
                     for (var it= 0; it<data.groups.length; it++) {
                         self.groups[it] = { label: data.groups[it].label, items: [] };
                         for (var id= 0; id<data.groups[it].list.length; id++) {
@@ -296,6 +302,7 @@ $(document).ready(function DomoticzW() {
                             devices.switches.push(o[prop]);
                             break;
                         case "Temp":
+                        case "Temp + Humidity":
                             o[prop].isSensor = true;
                             devices.sensors.push(o[prop]);
                             break;
@@ -326,7 +333,7 @@ $(document).ready(function DomoticzW() {
             devices.others.sort( function(a, b) {
                 return self.sort(a,b);
             });
-            console.log(devices);
+            console.log("Device", devices);
             return devices;
         },
         load: function(handler) {
@@ -357,18 +364,20 @@ $(document).ready(function DomoticzW() {
             for (var isw=0; isw<idxList.length; isw++) {
                 var idx = idxList[isw];
                 var o = order;
-                command = "type=command&param=switchlight&idx="+idx+"&switchcmd="+o;
-                $log.info(Switches.devices.byIdx[idx].Name+": envoi de la command ["+o+"]");
-                DomoServer.init().request(
-                    command,
-                    "GET",
-                    null,
-                    null,
-                    function(data) {
-                        domoLog.write(idx, o, data.status);
-                        self.lastStatus = data;
-                    }
-                )
+                if (Switches.devices.byIdx[idx] != undefined) {
+                    command = "type=command&param=switchlight&idx=" + idx + "&switchcmd=" + o;
+                    $log.info(Switches.devices.byIdx[idx].Name + ": envoi de la command [" + o + "]");
+                    DomoServer.init().request(
+                        command,
+                        "GET",
+                        null,
+                        null,
+                        function(data) {
+                            domoLog.write(idx, o, data.status);
+                            self.lastStatus = data;
+                        }
+                    );
+                }
             }
             return false;
         },
@@ -397,10 +406,11 @@ $(document).ready(function DomoticzW() {
     var UI = {
         forecastHourly : function() {
             $("#forecast-hourly").empty().html(Mustache.render(
-                $("#forecast-hourly-template").html(), Forecast.datas.hourly
+                $("#forecast-hourly-template").html(), Forecast.datas
             ));
         },
         forecast: function() {
+            console.log(Forecast.datas);
             this.forecastHourly();
             var skycons = new Skycons({"color": "#F00"});
             $("canvas[data-domo-icon]")
@@ -478,7 +488,6 @@ $(document).ready(function DomoticzW() {
         Switches.run($(this).data('domo-idx'), $(this).data('domo-action'));
     });
     $('body').on("click", '[data-domo-switch-state]', function() {
-        console.log($(this), $(this).data("domo-switch-state"));
         if ( $(this).data("domo-switch-state") == "On") {
             Switches.run($(this).data('domo-idx'), "off");
             $(this).data("domo-switch-state", "Off");
@@ -514,6 +523,7 @@ $(document).ready(function DomoticzW() {
             UI.setDomoData("forecast-current-temperature", Forecast.datas.currently.temperature);
             UI.setDomoData("forecast-current-summary", Forecast.datas.currently.summary);
             Forecast.datas.hourly.data = Forecast.datas.hourly.data.slice(0, 12);
+            Forecast.datas.daily.data = Forecast.datas.daily.data.slice(1, 7);
             UI.forecast();
             return;
 
@@ -571,4 +581,5 @@ $(document).ready(function DomoticzW() {
         }
     };
 
+    $(".debug").css("display", "none");
 });

@@ -39,10 +39,9 @@ body {
   border: 2px solid #FFF;
   border-radius: 5px;
   margin-right: 3px;
-  height: 6em;
+  height: 5em;
   display: block;
   float: left;
-  padding: 1em;
   color: @fg-color;
   &:hover {
     color: @fg-color;
@@ -118,19 +117,19 @@ body {
     position: fixed;
     bottom: 0;
     left: 0;
-    padding: 10px;
+    margin-left: 10px;
     width: 100%;
     a {
-      margin:0;
-      display: inline-block;
-      padding:10px;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 1px 1px 0 rgba(0,0,0,0.7);
-      i {
-      }
+      margin-right: 1px;
+      padding: 10px 15px 5px 15px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: @fg-color;
+      border-radius: 5px 5px 0 0;
+      cursor: pointer;
     }
   }
 }
+
 .main-page {
   position: fixed;
   left:@leftbar-width;
@@ -163,7 +162,7 @@ body {
 }
 
 .blind-set {
-  margin-top:3em;
+  margin-top:2em;
 }
 .blind-box {
   .blind-label {
@@ -183,31 +182,44 @@ body {
   margin-top:3em;
   color: orange;
 }
-
-.fhour {
-  display: block;
-  float:left;
-  margin:0;
-  padding:0;
-  margin-bottom: 1em;
-  font-size: 150%;
-  .fhour-temp, .fhour-summary {
-    padding-left: 0.5em;
+.forecast  {
+  .title {
+    font-size: 120%;
+    color: rgba(255,255,255,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-top: 1em;
+    margin-bottom: 1em;
   }
-  .fhour-summary {
-    color: rgba(255,255,255,0.7);
+  .fhour {
+    display: block;
+    margin: 0;
+    padding: 5px;
+    margin-bottom: 1em;
+    font-size: 150%;
+    .fhour-temp, .fhour-summary {
+      padding-left: 0.5em;
+    }
+    .fhour-summary {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .fhour-hour {
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.7);
+      text-align: left;
+    }
+    [data-domo-icon] {
+      vertical-align: text-top;
+      margin-top: -3em;
+      opacity: 0.5;
+      margin-left: 2em;
+      position: absolute;
+    }
   }
-  .fhour-hour {
-    font-style: italic;
-    color: rgba(255, 255, 255, 0.7);
-    text-align: left;
+  .update-time {
+    padding-right: 1em;
+    text-align: right;
+    color: rgba(255,255,255,0.4);
   }
-  [data-domo-icon] {
-    vertical-align: text-top;
-    margin-top: -2em;
-    opacity: 0.5;
-    margin-left: 5%;
-    position: fixed;  }
 }
 .log {
   position: fixed;

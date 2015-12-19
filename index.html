@@ -73,15 +73,15 @@
         </li>
     </ul>
 
-    <div class="bottom-action">
+    <div class="bottom-action clearfix">
         <a class="full-screen" >
-            <i class="fa fa-fw fa-2x fa-television"></i>
+            <i class="fa fa-fw fa-television"></i>
         </a>
-        <a class="reload-css" >
-            <i class="fa fa-fw fa-2x fa-upload "></i>
+        <a class="reload-css debug" >
+            <i class="fa fa-fw fa-upload "></i>
         </a>
-        <a class="toggle-css" >
-            <i class="fa fa-fw fa-2x fa-shield "></i>
+        <a class="toggle-css debug" >
+            <i class="fa fa-fw fa-shield "></i>
         </a>
     </div>
 
@@ -99,10 +99,10 @@
                     </div>
                     <div class="somedatas sun">
                         <div class="up">
-                            <i class="fa fa-sun-o"></i> 8h54
+                            <i class="fa fa-sun-o"></i> <span data-domo-key="sunrise">--:--</span>
                         </div>
                         <div class="down">
-                            <i class="fa fa-moon-o"></i> 17h28
+                            <i class="fa fa-moon-o"></i> <span data-domo-key="sunset">--:--</span>
                         </div>
                     </div>
                     <div class="somedatas meteo">
@@ -140,7 +140,7 @@
             <div role="tabpanel" class="tab-pane fade" id="groups-tab">
                 <div class="col-xs-12 clearfix" id="groups"></div>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="forecast-tab">
+            <div role="tabpanel" class="tab-pane fade forecast" id="forecast-tab">
                 <div id="forecast-hourly"></div>
                 <div class="row">
                     <div class="cols-xs-12">
@@ -173,14 +173,14 @@
     <div class="row">
         <div class="col-xs-offset-6 col-xs-2 device-label">Tous</div>
         <div class="col-xs-4 device-commands">
-            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
-                <i class="fa fa-4x fa-fw fa-caret-up"></i>
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-down"></i>
             </a>
             <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
                 <i class="fa fa-4x fa-fw fa-minus"></i>
             </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
-                <i class="fa fa-4x fa-fw fa-caret-down"></i>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-up"></i>
             </a>
         </div>
     </div>
@@ -190,14 +190,14 @@
         {{#items}}
         <div class="col-xs-2 device-label">{{Name}}</div>
         <div class="col-xs-4 device-commands">
-            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
-                <i class="fa fa-4x fa-fw fa-caret-up"></i>
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
+                <i class="fa fa-4x fa-fw fa-caret-down"></i>
             </a>
             <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
                 <i class="fa fa-4x fa-fw fa-minus"></i>
             </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
-                <i class="fa fa-4x fa-fw fa-caret-down"></i>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{{idx}}}" data-domo-type="{{Type}}">
+                <i class="fa fa-4x fa-fw fa-caret-up"></i>
             </a>
         </div>
         {{/items}}
@@ -227,14 +227,14 @@
     {{#groups}}
         <div class="col-xs-2 device-label">{{label}}</div>
         <div class="col-xs-4 device-commands">
-            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
-                <i class="fa fa-4x fa-fw fa-caret-up"></i>
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-down"></i>
             </a>
             <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
                 <i class="fa fa-4x fa-fw fa-minus"></i>
             </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
-                <i class="fa fa-4x fa-fw fa-caret-down"></i>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-up"></i>
             </a>
         </div>
     {{/groups}}
@@ -246,25 +246,37 @@
 <script id="forecast-hourly-template" type="x-tmpl-mustache">
 <div class="row">
     <div class="col-xs-12">
-        <h1 class="title">Aujourd'hui
-        </h1>
+        <div class="title">Les 12 prochaines heures...</div>
     </div>
 </div>
 <div class="row">
-    {{#data}}
-    <div class="col-xs-2 fhour">
-        <div class="fhour-hour">{{dateTime.hour}}h</div>
-        <canvas id="{{time}}" data-domo-icon={{icon}} width="100px" height="100px"></canvas>
-        <div class="fhour-temp">{{temperature}}°c</div>
-        <div class="fhour-summary">{{summary}}</div>
+    {{#hourly.data}}
+    <div class="col-xs-2">
+        <div class="fhour">
+            <div class="fhour-hour">{{dateTime.hour}}h</div>
+            <canvas id="{{time}}" data-domo-icon={{icon}} width="70px" height="70px"></canvas>
+            <div class="fhour-temp">{{temperature}}°c</div>
+            <div class="fhour-summary">{{summary}}</div>
+        </div>
     </div>
-    {{/data}}
+    {{/hourly.data}}
 </div>
 <div class="row">
     <div class="col-xs-12">
-        <h1 class="title">Les jour à venir
-        </h1>
+        <div class="title">Les prochaine jours...</div>
     </div>
+</div>
+<div class="row">
+    {{#daily.data}}
+    <div class="col-xs-2">
+        <div class="fhour">
+            <div class="fhour-hour">{{dateTime.shortDay}}</div>
+            <canvas id="{{time}}" data-domo-icon={{icon}} width="70px" height="70px"></canvas>
+            <div class="fhour-temp">{{apparentTemperatureMin}}-{{apparentTemperatureMax}}°c</div>
+            <div class="fhour-summary">{{summary}}</div>
+        </div>
+    </div>
+    {{/daily.data}}
 </div>
 </script>
 
