@@ -47,13 +47,12 @@ $(document).ready(function DomoticzW() {
             second: "numeric",
             hour12: false
         };
-        var nD = new Date((timestamp));
+        var nD = new Date();
+        nD.setTime(timestamp);
         return {
-            "day" : nD.toLocaleString("fr-FR", optionsDay),
-            "hour" : nD.toLocaleString("fr-FR", optionsHour),
-            toString: function() {
-                return nD.toLocaleString("fr-FR", optionsDay)+" "+nD.toLocaleString("fr-FR", optionsHour);
-            }
+            day : nD.toLocaleString("fr-FR", optionsDay),
+            hour: nD.toLocaleString("fr-FR", optionsHour),
+            string: nD.toLocaleString("fr-FR", optionsDay)+" "+nD.toLocaleString("fr-FR", optionsHour)
         };
     };
 
@@ -62,7 +61,7 @@ $(document).ready(function DomoticzW() {
         lastUpdate: null,
         datas: null,
         parameters: null,
-        interval: 30* 60 * 1000,
+        interval: 30 * 60 * 1000,
         init: function (handler) {
             this.updateHandler = handler;
             var self = this;
@@ -82,13 +81,21 @@ $(document).ready(function DomoticzW() {
                 }
             );
         },
+        programUpdate: function() {
+            var self = this;
+            var nextUpdateIn =  self.lastUpdate + self.interval - Date.now();
+            $log.info("Météo, récupération des données dans "+Math.ceil(nextUpdateIn/(60*1000))+" minutes.");
+            setTimeout( function() {
+                self.retrieve();
+            }, nextUpdateIn );
+        },
         retrieve: function() {
             var self = this;
             var now = Date.now();
             this.datas = JSON.parse(localStorage.getItem("forecast.datas"));
             this.lastUpdate = parseInt(localStorage.getItem("forecast.lastUpdate"));
             if (this.lastUpdate === null || (this.lastUpdate + this.interval) < now) {
-                $log.info("Appel de Forecast.io [date : "+myDate(this.lastUpdate).toString()+"]");
+                $log.info("Appel de Forecast.io...");
                 var urlE = "/" +this.parameters.key +  "/" + this.parameters.loc;
                 urlE +=  "?callback=handleForecastResponse&"+ $.param(self.parameters.options);
                 var retrieve = $.ajax({
@@ -101,11 +108,8 @@ $(document).ready(function DomoticzW() {
                     }
                 });
             } else {
-                $log.info("Utilisation des données météo locales [date : "+myDate(this.lastUpdate).toString()+"].");
-                $log.info("Météo, récupération des données dans "+self.interval/(60*1000)+" minutes.")
-                setTimeout( function() {
-                    self.retrieve();
-                }, self.interval );
+                $log.info("Utilisation des données météo locales [date de récupération : "+myDate(this.lastUpdate).string+"].");
+                self.programUpdate();
                 self.updateHandler();
             }
         },
@@ -123,9 +127,11 @@ $(document).ready(function DomoticzW() {
             this.datas = data;
             for (var it=0; it<this.datas.daily.data.length; it++) {
                 this.datas.daily.data[it].dateTime = myDate((this.datas.daily.data[it].time * 1000));
+                this.datas.daily.data[it].dateTime.hour = this.datas.daily.data[it].dateTime.hour.substr(0,2);
             }
             for (var it=0; it<this.datas.hourly.data.length; it++) {
                 this.datas.hourly.data[it].dateTime = myDate((this.datas.hourly.data[it].time * 1000));
+                this.datas.hourly.data[it].dateTime.hour = this.datas.hourly.data[it].dateTime.hour.substr(0,2);
             }
             this.datas.currently.dateTime = myDate((this.datas.currently.time * 1000));
             var itab = [ $.extend({}, this.datas.currently) ];
@@ -134,10 +140,7 @@ $(document).ready(function DomoticzW() {
             localStorage.setItem("forecast.lastUpdate", self.lastUpdate);
             localStorage.setItem("forecast.datas", JSON.stringify(this.datas));
             self.updateHandler();
-            $log.info("Météo, récupération des données dans "+self.interval/(60*1000)+" minutes.")
-            setTimeout( function() {
-                self.retrieve();
-            }, self.interval );
+            self.programUpdate();
         },
         getDatas: function() {
             this.datas = JSON.parse(localStorage.getItem("forecast.datas"));
@@ -216,7 +219,7 @@ $(document).ready(function DomoticzW() {
     var DomoServer = {
         init: function () {
             var newServer = Object.create(Server);
-            newServer.backendUrl = "http://192.168.0.60/json.htm?";
+            newServer.backendUrl = "http://192.168.0.60:8080/json.htm?";
             return newServer;
         }
     };
@@ -466,103 +469,106 @@ $(document).ready(function DomoticzW() {
         }
     };
 
-Forecast.init( function() {
-    console.log("Forecast.datas", Forecast.datas);
-    $("#forecast-current-icon").data("domo-icon", Forecast.datas.currently.icon);
-    UI.setDomoData("forecast-current-temperature", Forecast.datas.currently.temperature);
-    Forecast.datas.hourly.data = Forecast.datas.hourly.data.slice(0, 12);
-    UI.forecast();
-    return;
-
-    $("#forecast-current").empty().html(Mustache.render(
-        $("#forecast-template").html(), meteo.currently
-    ));
-    $("#forecast-day").empty().html(Mustache.render(
-        $("#forecast-template").html(), meteo.daily
-    ));
-    $("#forecast-week").empty().html(Mustache.render(
-        $("#forecast-template").html(), meteo.hourly
-    ));
-    var d = myDate(parseInt(localStorage.getItem("forecast.lastUpdate")));
-    UI.setDomoData("forecast.uptime", d.day+" "+ d.hour);
-});
-
-var ws = window.screen;
-if (ws.availHeight < 600 || ws.availWidth < 960) {
-    alert("Screen too small "+ws.availHeight+"x"+ws.availWidth)
-}
-
-$('body').on("click", '[data-domo-action]', function() {
-    Switches.run($(this).data('domo-idx'), $(this).data('domo-action'));
-});
-$('body').on("click", '[data-domo-switch-state]', function() {
-    console.log($(this), $(this).data("domo-switch-state"));
-    if ( $(this).data("domo-switch-state") == "On") {
-        Switches.run($(this).data('domo-idx'), "off");
-        $(this).data("domo-switch-state", "Off");
-    } else {
-        Switches.run($(this).data('domo-idx'), "on");
-        $(this).data("domo-switch-state", "On");
+    var ws = window.screen;
+    if (ws.availHeight < 600 || ws.availWidth < 960) {
+        alert("Screen too small "+ws.availHeight+"x"+ws.availWidth)
     }
-    UI.setSwitch($(this));
-});
 
-$log.info("L'application est chargée.");
-
-var initScreen = function() {
-    $log.debug("Loading datas...");
-    $(".logo").addClass("fa fa-spin");
-    $(".loading-datas").fadeIn();
-    $('[data-domo-var="date"]').html(myDate(Date.now()).day);
-    Switches.load( function() {
-        UI.devices();
-        AppGroups.load( function() {
-            $("#groups").empty().html(Mustache.render(
-                $("#groups-template").html(), AppGroups
-            ));
-            $(".loading-datas").fadeOut();
-            $(".logo").removeClass("fa fa-spin");
-
-            /*
-             setTimeout(function () {
-             initScreen();
-             }, 630000 );
-             */
-
-        });
+    $('body').on("click", '[data-domo-action]', function() {
+        Switches.run($(this).data('domo-idx'), $(this).data('domo-action'));
     });
-};
-initScreen();
+    $('body').on("click", '[data-domo-switch-state]', function() {
+        console.log($(this), $(this).data("domo-switch-state"));
+        if ( $(this).data("domo-switch-state") == "On") {
+            Switches.run($(this).data('domo-idx'), "off");
+            $(this).data("domo-switch-state", "Off");
+        } else {
+            Switches.run($(this).data('domo-idx'), "on");
+            $(this).data("domo-switch-state", "On");
+        }
+        UI.setSwitch($(this));
+    });
 
-$(".reload-page").on("click", function () {
+    $log.info("L'application est chargée.");
+
+    var initScreen = function() {
+        $log.info("Chargement des données.");
+        $(".logo").addClass("fa fa-spin");
+        $(".loading-datas").fadeIn();
+        $('[data-domo-var="date"]').html(myDate(Date.now()).day);
+
+        Switches.load( function() {
+            UI.devices();
+            AppGroups.load( function() {
+                $("#groups").empty().html(Mustache.render(
+                    $("#groups-template").html(), AppGroups
+                ));
+                $(".loading-datas").fadeOut();
+                $(".logo").removeClass("fa fa-spin");
+            });
+        });
+
+        Forecast.init( function() {
+            UI.setDomoData("forecast-last-update", myDate(Forecast.lastUpdate).string);
+            $("#forecast-current-icon").data("domo-icon", Forecast.datas.currently.icon);
+            UI.setDomoData("forecast-current-temperature", Forecast.datas.currently.temperature);
+            UI.setDomoData("forecast-current-summary", Forecast.datas.currently.summary);
+            Forecast.datas.hourly.data = Forecast.datas.hourly.data.slice(0, 12);
+            UI.forecast();
+            return;
+
+            $("#forecast-current").empty().html(Mustache.render(
+                $("#forecast-template").html(), meteo.currently
+            ));
+            $("#forecast-day").empty().html(Mustache.render(
+                $("#forecast-template").html(), meteo.daily
+            ));
+            $("#forecast-week").empty().html(Mustache.render(
+                $("#forecast-template").html(), meteo.hourly
+            ));
+            var d = myDate(parseInt(localStorage.getItem("forecast.lastUpdate")));
+            UI.setDomoData("forecast.uptime", d.day+" "+ d.hour);
+        });
+
+        /*
+         setTimeout(function () {
+         initScreen();
+         }, 630000 );
+         */
+
+
+    };
     initScreen();
-});
-$(".full-screen").on("click", function () {
-    toggleFullScreen();
-});
-var toggleFullScreen = function() {
-    if (!document.fullscreenElement &&    // alternative standard method
-        !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
-        if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen();
-        } else if (document.documentElement.msRequestFullscreen) {
-            document.documentElement.msRequestFullscreen();
-        } else if (document.documentElement.mozRequestFullScreen) {
-            document.documentElement.mozRequestFullScreen();
-        } else if (document.documentElement.webkitRequestFullscreen) {
-            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+
+    $(".reload-page").on("click", function () {
+        initScreen();
+    });
+    $(".full-screen").on("click", function () {
+        toggleFullScreen();
+    });
+    var toggleFullScreen = function() {
+        if (!document.fullscreenElement &&    // alternative standard method
+            !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) {
+                document.documentElement.msRequestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) {
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
         }
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        }
-    }
-};
+    };
 
 });

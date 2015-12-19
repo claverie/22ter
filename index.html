@@ -93,27 +93,36 @@
         <div class="row">
             <div class="col-xs-12 header clearfix">
                 <div class="pull-right">
-                    <span class="somedatas" data-domo-var="date"></span>
-                    <span class="somedatas sunset">
-                        <i class="fa fa-sun-o"></i> 8h54
-                    </span>
-                    <span class="somedatas sunrise">
-                        <i class="fa fa-moon-o"></i> 17h28
-                    </span>
-                    <span class="somedatas temperature">
-                        <canvas id="forecast-current-icon" data-domo-icon="" width="30px" height="30px"></canvas>
-                        <span data-domo-key="forecast-current-temperature">--</span>°c
-                    </span>
-                </div>
-                <div class="pull-left">
-                    <span style="display:none" class="loading-datas fade in">
+                    <div class="somedatas">
+                        <div class="up" data-domo-var="date"></div>
+                        <div class="up" data-domo-var="time">&nbsp;</div>
+                    </div>
+                    <div class="somedatas sun">
+                        <div class="up">
+                            <i class="fa fa-sun-o"></i> 8h54
+                        </div>
+                        <div class="down">
+                            <i class="fa fa-moon-o"></i> 17h28
+                        </div>
+                    </div>
+                    <div class="somedatas meteo">
+                        <div class="up">
+                            <canvas id="forecast-current-icon" data-domo-icon="" width="30px" height="30px"></canvas>
+                            <span data-domo-key="forecast-current-temperature">--</span>°c
+                        </div>
+                        <div class="down summary">
+                            <span data-domo-key="forecast-current-summary"></span>
+                        </div>
+                    </div>
+                    <div class="pull-left">
+                        <span style="display:none" class="loading-datas fade in">
                          Mise à jour des données
-                    </span>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="container-fluid">
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade in active blind-set" id="blinds-rdc-tab">
@@ -133,13 +142,17 @@
             </div>
             <div role="tabpanel" class="tab-pane fade" id="forecast-tab">
                 <div id="forecast-hourly"></div>
-
+                <div class="row">
+                    <div class="cols-xs-12">
+                        <p class="update-time">Powered by Forecast.io, <span data-domo-key="forecast-last-update">--/--/----- --:--</span></p>
+                    </div>
+                </div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="sensors-tab">
-                <h1 class=""title">Sensors</h1>
+                <h1 class="title">Sensors</h1>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="programs-tab">
-                <h1 class=""title">Programs</h1>
+                <h1 class="title">Programs</h1>
             </div>
         </div>
     </div>
@@ -232,27 +245,26 @@
 
 <script id="forecast-hourly-template" type="x-tmpl-mustache">
 <div class="row">
-    <div class="cols-xs-12">
+    <div class="col-xs-12">
         <h1 class="title">Aujourd'hui
         </h1>
     </div>
 </div>
 <div class="row">
     {{#data}}
-    <div class="col-xs-1 fhour">
-        <div class="fhour-summary">{{summary}}</div>
-        <canvas id="{{time}}" data-domo-icon={{icon}} width="60px" height="60px"></canvas>
+    <div class="col-xs-2 fhour">
+        <div class="fhour-hour">{{dateTime.hour}}h</div>
+        <canvas id="{{time}}" data-domo-icon={{icon}} width="100px" height="100px"></canvas>
         <div class="fhour-temp">{{temperature}}°c</div>
-        <div class="fhour-hour">{{dateTime.hour}}</div>
+        <div class="fhour-summary">{{summary}}</div>
     </div>
     {{/data}}
-</div><div class="row">
-    <div class="cols-xs-12">
+</div>
+<div class="row">
+    <div class="col-xs-12">
         <h1 class="title">Les jour à venir
         </h1>
     </div>
-</div>
-<div class="row">
 </div>
 </script>
 
