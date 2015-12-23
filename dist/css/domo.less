@@ -17,7 +17,7 @@ body {
 }
 
 .devices-group {
-    padding-top: 3em;
+    padding-top: 5em;
     .device-label {
       font-size: 170%;
       line-height: 3em;
@@ -113,22 +113,8 @@ body {
       }
     }
   }
-  .bottom-action {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    margin-left: 10px;
-    width: 100%;
-    a {
-      margin-right: 1px;
-      padding: 10px 15px 5px 15px;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: @fg-color;
-      border-radius: 5px 5px 0 0;
-      cursor: pointer;
-    }
-  }
 }
+
 
 .main-page {
   position: fixed;
@@ -161,9 +147,7 @@ body {
   }
 }
 
-.blind-set {
-  margin-top:2em;
-}
+
 .blind-box {
   .blind-label {
     padding-top: 20px;
@@ -221,18 +205,31 @@ body {
     color: rgba(255,255,255,0.4);
   }
 }
-.log {
+
+
+.su-menu {
   position: fixed;
   bottom: 0;
-  left: @leftbar-width;
+  left: 0;
   right:0;
+  &.log {
+    left: @leftbar-width;
+  }
+  &.action {
+    width: @leftbar-width;
+  }
   .toggle {
+    font-size: 1.5em;
     margin-right: 10px;
+    margin-left: 10px;
     padding: 5px 15px 5px 15px;
     background-color: rgba(0, 0, 0, 0.5);
     color: @fg-color;
     border-radius: 5px 5px 0 0;
     cursor: pointer;
+    .show {
+      display: inline-block !important;
+    }
   }
   .content {
     overflow-y: auto;
@@ -240,6 +237,23 @@ body {
     padding:20px;
     background-color: rgba(0, 0, 0, 0.5);
     color: #FFF;
+    a {
+      background-color: rgba(255,255,255,0.03);
+      cursor: pointer;
+      font-size: 1.5em;
+      &:hover {
+        text-decoration: none;
+      }
+      display: block;
+      padding: 5px;
+      margin-bottom: 5px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 3px;
+      img {
+        height: 1.5em;
+        width: 1.5em;
+      }
+    }
     .entry {
       border-bottom: 1px solid rgba(255,255,255,0.2);
       &:first-child {

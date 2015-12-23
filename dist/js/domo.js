@@ -225,7 +225,7 @@ $(document).ready(function DomoticzW() {
     var DomoServer = {
         init: function () {
             var newServer = Object.create(Server);
-            newServer.backendUrl = "http://192.168.0.60:8080/json.htm?";
+            newServer.backendUrl = "http://192.168.0.60/domo/json.htm?";
             return newServer;
         }
     };
@@ -582,4 +582,20 @@ $(document).ready(function DomoticzW() {
     };
 
     $(".debug").css("display", "none");
+
+    var toggleSUMenu = function( $menu ) {
+        $menu.children(".content").fadeToggle( function() {
+            if ($menu.find(".toggle .open").hasClass("show")) {
+                $menu.find(".toggle .open").removeClass("show").addClass("hide");
+                $menu.find(".toggle .closed").removeClass("hide").addClass("show");
+            } else {
+                $menu.find(".toggle .closed").removeClass("show").addClass("hide");
+                $menu.find(".toggle .open").removeClass("hide").addClass("show");
+            }
+        });
+//    if ($(this).find(".show").css("display"))
+    };
+    $(".su-menu .toggle").on("click", function() {
+        toggleSUMenu( $(this).parent().parent() );
+    })
 });

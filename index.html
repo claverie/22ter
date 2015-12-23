@@ -73,16 +73,28 @@
         </li>
     </ul>
 
-    <div class="bottom-action clearfix">
-        <a class="full-screen" >
-            <i class="fa fa-fw fa-television"></i>
-        </a>
-        <a class="reload-css debug" >
-            <i class="fa fa-fw fa-upload "></i>
-        </a>
-        <a class="toggle-css debug" >
-            <i class="fa fa-fw fa-shield "></i>
-        </a>
+    <div class="su-menu action">
+        <div class="bar clearfix ">
+            <div class="toggle pull-left">
+                <span class="open hide"><i class="fa fa-angle-double-down"></i></span>
+                <span class="closed show"><i class="fa fa-angle-double-up"></i></span>
+                Avancée
+            </div>
+        </div>
+        <div style="display:none" class="clearfix fade in content">
+            <a class="domoticz" href="/domo/" target="domo" >
+                <img src="/domo/images/logo192.png"> Accès Domoticz
+            </a>
+            <a class="full-screen" >
+                <i class="fa fa-fw fa-television"></i> Mode plein écran
+            </a>
+            <a class="reload-css debug" >
+                <i class="fa fa-fw fa-upload "></i>
+            </a>
+            <a class="toggle-css debug" >
+                <i class="fa fa-fw fa-shield "></i>
+            </a>
+        </div>
     </div>
 
 </div>
@@ -158,11 +170,12 @@
     </div>
 </div>
 
-<div class="log">
+<div class="su-menu log">
     <div class="bar clearfix ">
         <div class="toggle pull-right">
-            <span class="open hide"><i class="fa fa-2x fa-angle-double-down"></i></span>
-            <span class="closed show"><i class="fa fa-2x fa-angle-double-up"></i></span>
+            <span class="open hide"><i class="fa fa-angle-double-down"></i></span>
+            <span class="closed show"><i class="fa fa-angle-double-up"></i></span>
+            Journal
         </div>
     </div>
     <div style="display:none" class="clearfix fade in content"></div>
@@ -170,22 +183,6 @@
 
 <script id="blinds-template" type="x-tmpl-mustache">
 <div class="devices-group">
-    <div class="row">
-        <div class="col-xs-offset-6 col-xs-2 device-label">Tous</div>
-        <div class="col-xs-4 device-commands">
-            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
-                <i class="fa fa-4x fa-fw fa-caret-down"></i>
-            </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
-                <i class="fa fa-4x fa-fw fa-minus"></i>
-            </a>
-            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
-                <i class="fa fa-4x fa-fw fa-caret-up"></i>
-            </a>
-        </div>
-    </div>
- </div>
- <div class="devices-group">
    <div class="row">
         {{#items}}
         <div class="col-xs-2 device-label">{{Name}}</div>
@@ -203,6 +200,22 @@
         {{/items}}
     </div>
 </div>
+ <div class="devices-group">
+    <div class="row">
+        <div class="col-xs-offset-6 col-xs-2 device-label">Tous</div>
+        <div class="col-xs-4 device-commands">
+            <a class="blind-btn mybtn" href="#" data-domo-action="On"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-down"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Stop"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-minus"></i>
+            </a>
+            <a class="blind-btn mybtn" href="#" data-domo-action="Off"  data-domo-idx="{{#items}}{{{idx}}},{{/items}}" data-domo-type="RFY">
+                <i class="fa fa-4x fa-fw fa-caret-up"></i>
+            </a>
+        </div>
+    </div>
+ </div>
 </script>
 
 <script id="switches-template" type="x-tmpl-mustache">

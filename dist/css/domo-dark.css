@@ -8,7 +8,7 @@ body {
   color: #ffffff;
 }
 .devices-group {
-  padding-top: 3em;
+  padding-top: 5em;
 }
 .devices-group .device-label {
   font-size: 170%;
@@ -100,21 +100,6 @@ body {
   padding-left: 0.5em;
   padding-right: 0.5em;
 }
-.left-bar .bottom-action {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  margin-left: 10px;
-  width: 100%;
-}
-.left-bar .bottom-action a {
-  margin-right: 1px;
-  padding: 10px 15px 5px 15px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #ffffff;
-  border-radius: 5px 5px 0 0;
-  cursor: pointer;
-}
 .main-page {
   position: fixed;
   left: 300px;
@@ -140,9 +125,6 @@ body {
 }
 .main-page .tab-pane h1 {
   text-align: right;
-}
-.blind-set {
-  margin-top: 2em;
 }
 .blind-box .blind-label {
   padding-top: 20px;
@@ -196,50 +178,78 @@ body {
   text-align: right;
   color: rgba(255, 255, 255, 0.4);
 }
-.log {
+.su-menu {
   position: fixed;
   bottom: 0;
-  left: 300px;
+  left: 0;
   right: 0;
 }
-.log .toggle {
+.su-menu.log {
+  left: 300px;
+}
+.su-menu.action {
+  width: 300px;
+}
+.su-menu .toggle {
+  font-size: 1.5em;
   margin-right: 10px;
+  margin-left: 10px;
   padding: 5px 15px 5px 15px;
   background-color: rgba(0, 0, 0, 0.5);
   color: #ffffff;
   border-radius: 5px 5px 0 0;
   cursor: pointer;
 }
-.log .content {
+.su-menu .toggle .show {
+  display: inline-block !important;
+}
+.su-menu .content {
   overflow-y: auto;
   max-height: 200px;
   padding: 20px;
   background-color: rgba(0, 0, 0, 0.5);
   color: #FFF;
 }
-.log .content .entry {
+.su-menu .content a {
+  background-color: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  font-size: 1.5em;
+  display: block;
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+.su-menu .content a:hover {
+  text-decoration: none;
+}
+.su-menu .content a img {
+  height: 1.5em;
+  width: 1.5em;
+}
+.su-menu .content .entry {
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-.log .content .entry:first-child {
+.su-menu .content .entry:first-child {
   border-top: none;
 }
-.log .content .entry.danger {
+.su-menu .content .entry.danger {
   color: red;
 }
-.log .content .entry.warning {
+.su-menu .content .entry.warning {
   color: orange;
 }
-.log .content .entry.debug {
+.su-menu .content .entry.debug {
   color: lightskyblue;
 }
-.log .content .entry .date {
+.su-menu .content .entry .date {
   padding-left: 10px;
   float: left;
   max-width: 30%;
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.log .content .entry .message {
+.su-menu .content .entry .message {
   padding-left: 10px;
   float: left;
 }
