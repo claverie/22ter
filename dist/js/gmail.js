@@ -1,8 +1,10 @@
 
 // Your Client ID can be retrieved from your project in the Google
 // Developer Console, https://console.developers.google.com
+var USER_ID = '22ter.sevennes@gmail.com';
 var CLIENT_ID = '653479896684-bh89ra7bon0ku9u6d77jtpsjdrcg3ti9.apps.googleusercontent.com';
 var SCOPES = ['https://www.googleapis.com/auth/gmail.modify'];
+
 
 /**
  * Check if current user has authorized this application.
@@ -65,7 +67,7 @@ function getInboxState() {
     $(".message-status").removeClass("fa-envelope-o").addClass("fa-spin fa-refresh");
     $("[data-domo-key='message-count']").removeClass("have-message").addClass("no-message").html(""); // +"/"+resp.messagesTotal);
     var request = gapi.client.gmail.users.labels.get({
-        'userId': 'me',
+        'userId': USER_ID,
         'id': "INBOX"
     });
     request.execute(function(resp) {

@@ -610,7 +610,7 @@ $(document).ready(function DomoticzW() {
     var messageCount = 0;
     function getMessage(id, handler) {
         var request = gapi.client.gmail.users.messages.get({
-            'userId': 'me',
+            'userId': USER_ID,
             'id' : id,
         });
 
@@ -654,7 +654,7 @@ $(document).ready(function DomoticzW() {
         $("#messages-list").empty();
         label = label != undefined ? label : "INBOX";
         var request = gapi.client.gmail.users.messages.list({
-            'userId': 'me',
+            'userId': USER_ID,
             'includeSpamTrash' : 'false',
             'labelIds': 'INBOX'
         });
@@ -695,7 +695,7 @@ $(document).ready(function DomoticzW() {
                     $log.info("Suppression du message "+$self.data("message-id")+".");
                     $self.fadeOut().closest(".message").fadeOut().addClass("deleted");
                     request = gapi.client.gmail.users.messages.trash({
-                        'userId': 'me',
+                        'userId': USER_ID,
                         'id' : id,
                     });
                     break;
@@ -713,7 +713,7 @@ $(document).ready(function DomoticzW() {
                         }
                     });
                     request = gapi.client.gmail.users.messages.modify({
-                        'userId': 'me',
+                        'userId': USER_ID,
                         'id' : id,
                         'addLabelIds': (action === "setread" ? [] : [ "UNREAD" ]),
                         'removeLabelIds': (action === "setread" ? [ "UNREAD" ] : [])
