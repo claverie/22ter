@@ -68,8 +68,14 @@
         </li>
         <li>
             <a href="#sensors-tab" class="button"  aria-controls="sensors-tab" role="tab" data-toggle="tab">
-                <i class="fa fa-rotate-270 fa-battery-half "></i> Senseurs
+                <i class="fa fa-battery-half "></i> Senseurs
             </a>
+        </li>
+        <li>
+            <a href="#messages-tab" class="button"  aria-controls="messages-tab" role="tab" data-toggle="tab">
+                <i class="message-status fa fa-envelope-o "></i> Messages <span class="pull-right no-message" data-domo-key="message-count"></span>
+            </a>
+
         </li>
     </ul>
 
@@ -82,8 +88,8 @@
             </div>
         </div>
         <div style="display:none" class="clearfix fade in content">
-            <a class="domoticz" href="/domo/" target="domo" >
-                <img src="/domo/images/logo192.png"> Accès Domoticz
+            <a class="domoticz" href="http://192.168.0.60/domo/" target="domo" >
+                <img src="http://192.168.0.60/domo/images/logo192.png"> Accès Domoticz
             </a>
             <a class="full-screen" >
                 <i class="fa fa-fw fa-television"></i> Mode plein écran
@@ -92,7 +98,7 @@
                 <i class="fa fa-fw fa-upload "></i>
             </a>
             <a class="toggle-css debug" >
-                <i class="fa fa-fw fa-shield "></i>
+                <i class="fa fa-shield "></i>
             </a>
         </div>
     </div>
@@ -100,15 +106,19 @@
 </div>
 
 <div class="main-page">
-
-    <div class="container-fluid">
+    <div class="container-fluid main-page--header">
         <div class="row">
-            <div class="col-xs-12 header clearfix">
-                <div class="pull-right">
-                    <div class="somedatas">
-                        <div class="up" data-domo-var="date"></div>
-                        <div class="up" data-domo-var="time">&nbsp;</div>
+            <div class="col-xs-12 clearfix">
+                <div class="pull-left">
+                    <div class="up">
+                            <span data-domo-var="date"></span> <span data-domo-var="time">&nbsp;</span>
                     </div>
+                    <div>
+                        <a href="#" id="authorize-div" style="display:none">Authoriser l'accès à la messagerie</a>
+                        <span style="display:none" class="loading-datas fade in">Mise à jour des données...</span>
+                    </div>
+                </div>
+                <div class="pull-right">
                     <div class="somedatas sun">
                         <div class="up">
                             <i class="fa fa-sun-o"></i> <span data-domo-key="sunrise">--:--</span>
@@ -126,16 +136,11 @@
                             <span data-domo-key="forecast-current-summary"></span>
                         </div>
                     </div>
-                    <div class="pull-left">
-                        <span style="display:none" class="loading-datas fade in">
-                         Mise à jour des données
-                        </span>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid main-page--content">
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade in active blind-set" id="blinds-rdc-tab">
                 <div id="blinds-rdc"></div>
@@ -163,6 +168,11 @@
             <div role="tabpanel" class="tab-pane fade" id="sensors-tab">
                 <h1 class="title">Sensors</h1>
             </div>
+                        <div role="tabpanel" class="tab-pane fade" id="messages-tab">
+                <h1 class="title">Message</h1>
+                            <div id="messages-list" class="mails"></div>
+            </div>
+
             <div role="tabpanel" class="tab-pane fade" id="programs-tab">
                 <h1 class="title">Programs</h1>
             </div>
@@ -255,6 +265,25 @@
 </div>
 </script>
 
+<script id="messages-list-template" type="x-tmpl-mustache">
+{{#messages}}
+<div class="row message {{#new}}new{{/new}}">
+    <div class="col-xs-2 head">
+      <div class="from">{{localFrom}}</div>
+      <div class="date">{{localDate}}</div>
+    </div>
+    <div class="col-xs-10">
+        <div class="content">
+            <span style="display: none" class="fade in actions">
+               <i data-message-id="{{id}}" class="fa {{#new}}fa-envelope-o{{/new}}{{^new}}fa-envelope{{/new}}" data-message-action="{{#new}}setread{{/new}}{{^new}}setunread{{/new}}"></i>
+               <i data-message-id="{{id}}" class="fa fa-trash" data-message-action="trash"></i>
+            </span>
+            <div class="subject">{{Subject}}</div>
+        </div>
+    </div>
+</div>
+{{/messages}}
+</script>
 
 <script id="forecast-hourly-template" type="x-tmpl-mustache">
 <div class="row">
@@ -301,6 +330,8 @@
 <script type="text/javascript" src="dist/js/skycons.js"></script>
 <script type="text/javascript" src="dist/js/log.js"></script>
 <script type="text/javascript" src="dist/js/domo.js"></script>
+<script type="text/javascript" src="dist/js/gmail.js"></script>
+<script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
 
 </body>
 </html>

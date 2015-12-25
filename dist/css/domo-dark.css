@@ -45,8 +45,6 @@ body {
   bottom: 0;
   width: 300px;
   overflow-y: auto;
-  border-right: 1px solid #092544;
-  box-shadow: inset -1px 0 0 inset -1px 0 0 rgba(255, 255, 255, 0.1);
 }
 .left-bar .header {
   padding: 20px;
@@ -97,8 +95,23 @@ body {
   box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7), 3px 3px 0 rgba(0, 0, 0, 0.12);
 }
 .left-bar ul li a.button i {
+  width: 2em;
   padding-left: 0.5em;
   padding-right: 0.5em;
+}
+.left-bar ul li a.button [data-domo-key="message-count"].have-message {
+  display: inline-block;
+  background: #ffffff;
+  width: 1.35em;
+  border-radius: 3px;
+  color: #173a61;
+  text-align: center;
+  font-weight: bold;
+  padding: 0;
+  height: 1.3em;
+}
+.left-bar ul li a.button [data-domo-key="message-count"].no-message {
+  display: none;
 }
 .main-page {
   position: fixed;
@@ -108,20 +121,44 @@ body {
   bottom: 0;
   overflow-y: auto;
 }
-.main-page .header {
+.main-page .main-page--header {
+  position: absolute;
+  right: 0;
+  left: 0;
   font-size: 200%;
   padding: 20px 5px 20px 5px;
-  border-bottom: 1px solid #092544;
-  box-shadow: 0 1px 0 inset -1px 0 0 rgba(255, 255, 255, 0.1);
 }
-.main-page .header .somedatas {
+.main-page .main-page--header > .row {
+  margin-right: 0;
+  margin-left: 0;
+}
+.main-page .main-page--header .somedatas {
   padding-right: 20px;
   display: inline-block;
 }
-.main-page .header .somedatas.meteo .summary {
+.main-page .main-page--header .somedatas.meteo .summary {
   text-align: center;
   font-size: 85%;
   color: #97B6D8;
+}
+.main-page .main-page--header #authorize-div {
+  background-color: #3A8A44;
+  border: 1px solid #000601;
+  border-color: #AEE4B5 #196322 #196322 #AEE4B5;
+  box-shadow: 1px 1px 7px #000000, -2px -2px 10px rgba(0, 0, 0, 0.2), 10px 10px 10px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  font-size: 80%;
+  padding: 5px 15px;
+  border-radius: 3px;
+}
+.main-page .main-page--content {
+  position: absolute;
+  top: 120px;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  overflow: scroll;
+  box-shadow: inset 1px 1px 0 #09223e, inset 3px 3px 10px rgba(0, 0, 0, 0.2);
 }
 .main-page .tab-pane h1 {
   text-align: right;
@@ -252,4 +289,41 @@ body {
 .su-menu .content .entry .message {
   padding-left: 10px;
   float: left;
+}
+.message-status {
+  padding-left: 20px;
+}
+.mails .message {
+  padding: 5px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.mails .message.new {
+  color: #ffffff;
+}
+.mails .message.deleted {
+  color: rgba(0, 0, 0, 0.5);
+}
+.mails .message .from {
+  font-size: 130%;
+}
+.mails .message .date {
+  padding-left: 2em;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.4);
+}
+.mails .message .content {
+  font-size: 180%;
+}
+.mails .message .content .actions i {
+  cursor: pointer;
+  padding-right: 15px;
+}
+.mails .message .content .actions i.confirm {
+  color: red;
+}
+.mails .message .content .actions i.confirm::after {
+  content: " Pas de regret ?";
+}
+.mails .message .content .subject {
+  display: inline;
 }

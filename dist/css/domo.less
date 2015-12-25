@@ -55,8 +55,6 @@ body {
   bottom:0;
   width: @leftbar-width;
   overflow-y: auto;
-  border-right: 1px solid @border-color;
-  box-shadow: inset -1px 0 0 @border-shadow;
   .header {
     padding: 20px;
     .home {
@@ -106,8 +104,25 @@ body {
           border-top: 1px solid rgba(255,255,255,0.2);
           box-shadow: 1px 1px 0 rgba(0,0,0,0.7), 3px 3px 0 rgba(0,0,0,0.12);
           i {
+            width: 2em;
             padding-left:0.5em;
             padding-right:0.5em;
+          }
+          [data-domo-key="message-count"] {
+            &.have-message {
+              display: inline-block;
+              background: @fg-color;
+              width: 1.35em;
+              border-radius: 3px;
+              color: @bg-color;
+              text-align: center;
+              font-weight: bold;
+              padding: 0;
+              height: 1.3em;
+            }
+            &.no-message {
+              display:none;
+            }
           }
         }
       }
@@ -123,11 +138,16 @@ body {
   top:0;
   bottom:0;
   overflow-y: auto;
-  .header {
+  .main-page--header {
+    > .row {
+    margin-right: 0;
+      margin-left: 0;
+    }
+    position: absolute;
+    right: 0;
+    left: 0;
     font-size: 200%;
     padding: 20px 5px 20px 5px;
-    border-bottom: 1px solid @border-color;
-    box-shadow: 0 1px 0 @border-shadow;
     .somedatas {
       padding-right: 20px;
       display: inline-block;
@@ -139,6 +159,25 @@ body {
         }
       }
     }
+    #authorize-div {
+      background-color: #3A8A44;
+      border: 1px solid #000601;
+      border-color: #AEE4B5 #196322 #196322 #AEE4B5;
+      box-shadow: 1px 1px 7px #000, -2px -2px 10px rgba(0,0,0,0.2), 10px 10px 10px rgba(0,0,0,0.2);
+      color: #ffffff;
+      font-size: 80%;
+      padding: 5px 15px;
+      border-radius: 3px;
+    }
+  }
+  .main-page--content {
+    position: absolute;
+    top: 120px;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    overflow: scroll;
+    box-shadow: inset 1px 1px 0 rgb(9, 34, 62), inset 3px 3px 10px rgba(0, 0, 0, 0.20);
   }
   .tab-pane {
     h1 {
@@ -272,6 +311,49 @@ body {
       .message {
         padding-left: 10px;
         float: left;
+      }
+    }
+  }
+}
+.message-status {
+  padding-left: 20px;
+}
+.mails {
+  .message {
+    &.new {
+      color: rgba(255, 255, 255, 1);
+    }
+    &.deleted {
+      color: rgba(0, 0, 0, 0.5);
+    }
+    padding: 5px;
+    color: rgba(255, 255, 255, 0.7);
+    .from {
+      font-size: 130%;
+    }
+    .date {
+      padding-left: 2em;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    .content {
+      font-size: 180%;
+      .actions {
+        i {
+          cursor: pointer;
+          padding-right: 15px;
+          &.confirm {
+            color: red;
+            &::after {
+              content: " Pas de regret ?";
+            }
+          }
+        }
+      }
+      .subject {
+        display: inline;
+        &.new {
+        }
       }
     }
   }

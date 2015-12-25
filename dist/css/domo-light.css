@@ -1,0 +1,329 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,700,700italic,400italic");
+body,
+h1 {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+body {
+  background-color: #ffffff;
+  color: #ffffff;
+}
+.devices-group {
+  padding-top: 5em;
+}
+.devices-group .device-label {
+  font-size: 170%;
+  line-height: 3em;
+}
+.devices-group .device-commands {
+  padding-bottom: 2em;
+}
+.inter-btn {
+  display: inline-block;
+  height: 6em;
+  width: 6em;
+  line-height: 8em;
+  text-align: center;
+  color: #ffffff;
+}
+.mybtn {
+  border: 2px solid #FFF;
+  border-radius: 5px;
+  margin-right: 3px;
+  height: 5em;
+  display: block;
+  float: left;
+  color: #ffffff;
+}
+.mybtn:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.left-bar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 300px;
+  overflow-y: auto;
+}
+.left-bar .header {
+  padding: 20px;
+}
+.left-bar .header .home {
+  display: inline-block;
+  margin: 15px 0 15px 0;
+  padding-left: 20px;
+}
+.left-bar .header .home .somedatas {
+  display: inline-block;
+}
+.left-bar .header .home .somedatas .temperature {
+  font-size: 200%;
+}
+.left-bar .header .home .somedatas .temperature .humidity {
+  font-size: 75%;
+}
+.left-bar .header .home .somedatas .temperature i {
+  color: rgba(255, 255, 255, 0.5);
+}
+.left-bar .header .home .somedatas .temperature.up {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.left-bar .header .home .somedatas .temperature.down {
+  border-top: rgba(255, 255, 255, 0.5);
+}
+.left-bar .logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  vertical-align: top;
+}
+.left-bar ul li a {
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  white-space: nowrap;
+}
+.left-bar ul li a:hover {
+  color: #ffffff;
+}
+.left-bar ul li a.button {
+  font-size: 2em;
+  padding: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7), 3px 3px 0 rgba(0, 0, 0, 0.12);
+}
+.left-bar ul li a.button i {
+  width: 2em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+.left-bar ul li a.button [data-domo-key="message-count"].have-message {
+  display: inline-block;
+  background: #ffffff;
+  width: 1.35em;
+  border-radius: 3px;
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  padding: 0;
+  height: 1.3em;
+}
+.left-bar ul li a.button [data-domo-key="message-count"].no-message {
+  display: none;
+}
+.main-page {
+  position: fixed;
+  left: 300px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: auto;
+}
+.main-page .main-page--header {
+  position: absolute;
+  right: 0;
+  left: 0;
+  font-size: 200%;
+  padding: 20px 5px 20px 5px;
+}
+.main-page .main-page--header > .row {
+  margin-right: 0;
+  margin-left: 0;
+}
+.main-page .main-page--header .somedatas {
+  padding-right: 20px;
+  display: inline-block;
+}
+.main-page .main-page--header .somedatas.meteo .summary {
+  text-align: center;
+  font-size: 85%;
+  color: #97B6D8;
+}
+.main-page .main-page--header #authorize-div {
+  background-color: #3A8A44;
+  border: 1px solid #000601;
+  border-color: #AEE4B5 #196322 #196322 #AEE4B5;
+  box-shadow: 1px 1px 7px #000000, -2px -2px 10px rgba(0, 0, 0, 0.2), 10px 10px 10px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  font-size: 80%;
+  padding: 5px 15px;
+  border-radius: 3px;
+}
+.main-page .main-page--content {
+  position: absolute;
+  top: 120px;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  overflow: scroll;
+  box-shadow: inset 1px 1px 0 #09223e, inset 3px 3px 10px rgba(0, 0, 0, 0.2);
+}
+.main-page .tab-pane h1 {
+  text-align: right;
+}
+.blind-box .blind-label {
+  padding-top: 20px;
+  font-size: 160%;
+  text-align: right;
+}
+.blind-box .blind-commands .mybtn {
+  margin-left: 0;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.blind-all {
+  margin-top: 3em;
+  color: orange;
+}
+.forecast .title {
+  font-size: 120%;
+  color: rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 1em;
+  margin-bottom: 1em;
+}
+.forecast .fhour {
+  display: block;
+  margin: 0;
+  padding: 5px;
+  margin-bottom: 1em;
+  font-size: 150%;
+}
+.forecast .fhour .fhour-temp,
+.forecast .fhour .fhour-summary {
+  padding-left: 0.5em;
+}
+.forecast .fhour .fhour-summary {
+  color: rgba(255, 255, 255, 0.7);
+}
+.forecast .fhour .fhour-hour {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: left;
+}
+.forecast .fhour [data-domo-icon] {
+  vertical-align: text-top;
+  margin-top: -3em;
+  opacity: 0.5;
+  margin-left: 2em;
+  position: absolute;
+}
+.forecast .update-time {
+  padding-right: 1em;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.4);
+}
+.su-menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.su-menu.log {
+  left: 300px;
+}
+.su-menu.action {
+  width: 300px;
+}
+.su-menu .toggle {
+  font-size: 1.5em;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding: 5px 15px 5px 15px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+}
+.su-menu .toggle .show {
+  display: inline-block !important;
+}
+.su-menu .content {
+  overflow-y: auto;
+  max-height: 200px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #FFF;
+}
+.su-menu .content a {
+  background-color: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  font-size: 1.5em;
+  display: block;
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+.su-menu .content a:hover {
+  text-decoration: none;
+}
+.su-menu .content a img {
+  height: 1.5em;
+  width: 1.5em;
+}
+.su-menu .content .entry {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.su-menu .content .entry:first-child {
+  border-top: none;
+}
+.su-menu .content .entry.danger {
+  color: red;
+}
+.su-menu .content .entry.warning {
+  color: orange;
+}
+.su-menu .content .entry.debug {
+  color: lightskyblue;
+}
+.su-menu .content .entry .date {
+  padding-left: 10px;
+  float: left;
+  max-width: 30%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.su-menu .content .entry .message {
+  padding-left: 10px;
+  float: left;
+}
+.message-status {
+  padding-left: 20px;
+}
+.mails .message {
+  padding: 5px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.mails .message.new {
+  color: #ffffff;
+}
+.mails .message.deleted {
+  color: rgba(0, 0, 0, 0.5);
+}
+.mails .message .from {
+  font-size: 130%;
+}
+.mails .message .date {
+  padding-left: 2em;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.4);
+}
+.mails .message .content {
+  font-size: 180%;
+}
+.mails .message .content .actions i {
+  cursor: pointer;
+  padding-right: 15px;
+}
+.mails .message .content .actions i.confirm {
+  color: red;
+}
+.mails .message .content .actions i.confirm::after {
+  content: " Pas de regret ?";
+}
+.mails .message .content .subject {
+  display: inline;
+}

@@ -597,5 +597,148 @@ $(document).ready(function DomoticzW() {
     };
     $(".su-menu .toggle").on("click", function() {
         toggleSUMenu( $(this).parent().parent() );
-    })
+    });
+
+
+    /*
+     * --------------------------------------------------------------------------------
+     *  Message management
+     * --------------------------------------------------------------------------------
+     */
+
+    var messageList = [ ];
+    var messageCount = 0;
+    function getMessage(id, handler) {
+        var request = gapi.client.gmail.users.messages.get({
+            'userId': 'me',
+            'id' : id,
+        });
+
+        request.execute(function(resp) {
+            var headers = resp.payload.headers;
+            //console.log(resp);
+            var message = { id: resp.id, date: parseInt(resp.internalDate), new: false };
+             message.localDate = (new Date(parseInt(resp.internalDate))).toLocaleString("fr-FR", { "hour":"numeric", "minute":"2-digit", "day":"numeric","month":"short", "year":"2-digit"});
+            for (var il=0; il<resp.labelIds.length; il++) {
+                if (resp.labelIds[il] === "UNREAD")  message.new = true;
+            }
+            for (var ih=0; ih<headers.length; ih++) {
+                message[headers[ih]['name']] = headers[ih]['value'];
+            }
+            message.localFrom = message.From.replace(/ *<.*>/, "");
+            if (message.localFrom === message.From) message.localFrom = message.From;
+            //message.localDate = (new Date(message.Date)).toLocaleString("fr-FR", { "hour":"numeric", "minute":"2-digit", "day":"numeric","month":"short", "year":"2-digit"});
+             $("#messages-list").append(Mustache.render( $("#messages-list-template").html(), message ));
+            messageCount--;
+            messageList.push( message );
+            messageDisplay();
+       });
+    };
+
+
+    function messageDisplay() {
+        if (messageCount > 0 ) return;
+        console.log("LA LISTE EST COMPLETE", messageList);
+        messageList.sort( function(a, b) {
+            if (a.date === b.data) {
+                return 0;
+            }
+            else {
+                return (a.date > b.date ? -1 : 1);
+            }
+        });
+        $("#messages-list").append(Mustache.render( $("#messages-list-template").html(), { messages : messageList } ));
+    };
+
+    function getMessages(label) {
+        $("#messages-list").empty();
+        label = label != undefined ? label : "INBOX";
+        var request = gapi.client.gmail.users.messages.list({
+            'userId': 'me',
+            'includeSpamTrash' : 'false',
+            'labelIds': 'INBOX'
+        });
+
+        request.execute(function(resp) {
+            messageCount =  resp.result.messages.length;
+            messageList = [];
+            for (var im=0; im<resp.result.messages.length; im++) {
+                getMessage(resp.result.messages[im].id);
+            }
+        });
+
+    }
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var target = $(e.target).attr("href");
+        if (target === "#messages-tab") {
+            gapi.client.load('gmail', 'v1', getMessages);
+        }
+    });
+
+    $("body")
+        .on("click", ".message .subject", function() {
+            $(".message .actions").fadeOut().children(".confirm").removeClass("confirm").data("message-action","trash");
+            $(this).parent().children(".actions").fadeToggle();
+        })
+        .on("click", "[data-message-action]", function() {
+            var $self = $(this);
+            var request = null;
+            var action = $self.data("message-action");
+            var id = $self.data("message-id");
+            console.log("["+action+"]");
+            switch (action) {
+                case "trash":
+                    $self.addClass("confirm").data("message-action","confirm-trash");
+                    break;
+                case "confirm-trash":
+                    $log.info("Suppression du message "+$self.data("message-id")+".");
+                    $self.fadeOut().closest(".message").fadeOut().addClass("deleted");
+                    request = gapi.client.gmail.users.messages.trash({
+                        'userId': 'me',
+                        'id' : id,
+                    });
+                    break;
+                case "setread":
+                case "setunread":
+                    $log.info("Marquage comme "+(action === "setread" ? "lu" : "non lu")+" du message "+$self.data("message-id")+".");
+                    $self
+                        .removeClass("fa-envelope fa-envelope-o").addClass( action === "setread" ? "fa-envelope" : "fa-envelope-o")
+                        .data("message-action", action === "setread" ? "setunread" : "setread")
+                        .parent().fadeOut().closest(".message").each( function() {
+                        if ( action === "setread" ) {
+                            $(this).removeClass("new");
+                        } else {
+                            $(this).addClass("new");
+                        }
+                    });
+                    request = gapi.client.gmail.users.messages.modify({
+                        'userId': 'me',
+                        'id' : id,
+                        'addLabelIds': (action === "setread" ? [] : [ "UNREAD" ]),
+                        'removeLabelIds': (action === "setread" ? [ "UNREAD" ] : [])
+                    });
+                    break;
+                default:
+            }
+            if (request) request.execute( function(r) {
+                if (r.code === undefined) {
+                    getInboxState();
+                } else {
+                    $log.warning("Message [" + id + ":" + action + "] problème : ["+r.code+"]"+ r.message+".");
+                    console.log(r);
+                }
+            });
+        });
+
+    function messageInit( $elt ) {
+        $elt.on("click", function() {
+            gapi.client.load('gmail', 'v1', getInboxState);
+            return false;
+        });
+    }
+    messageInit( $("[data-domo-key='message-count']") );
+
+
 });
+
